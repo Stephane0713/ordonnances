@@ -23,13 +23,28 @@
   <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-4 rounded-sm">
       <div class="flex flex-col" x-data="{
-      selected: null,
-      prescriptions: @js($prescriptions),
-      select(id) { this.selected = this.prescriptions.data.find(p => p.id === id); }
-    }">
+        current: null,
+        prescriptions: @js($prescriptions),
+        openModal(modal, id = null) { 
+          this.current = id && this.prescriptions.data.find(p => id === p.id);
+          $dispatch('open-modal', modal); 
+        },
+        getSaveRoute() { 
+          return !this.current 
+          ? @js(route('prescriptions.store')) 
+          : @js(route('prescriptions.update', '__ID__')).replace('__ID__', this.current.id);
+        },
+        getInputValue(field) {
+          return this.current && this.current[field] || '';
+        }
+      }" x-on:open-store-modal.window="openModal('save')"
+        x-on:open-update-modal.window="openModal('save', $event.detail)"
+        x-on:open-delete-modal.window="openModal('delete', $event.detail)">
+
         <x-primary-button class="inline-block justify-center ml-auto mb-6"
-          x-on:click.prevent="selected = null; $dispatch('open-modal', 'save')">Ajouter une
-          ordonnance</x-primary-button>
+          x-on:click.prevent="$dispatch('open-store-modal')">
+          Ajouter une ordonnance</x-primary-button>
+
         <div class="overflow-x-auto shadow-md sm:rounded">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-blue-100">
@@ -50,12 +65,13 @@
                   <x-slot name="actions">
                     <x-dropdown-link class="cursor-pointer">Classer préparé</x-dropdown-link>
                     <x-dropdown-link class="cursor-pointer"
-                      x-on:click.prevent="select({{ $prescription->id }}); $dispatch('open-modal', 'save')">
-                      Corriger les informations</x-dropdown-link>
-                    <x-dropdown-link
-                      x-on:click.prevent="select({{ $prescription->id }}); $dispatch('open-modal', 'delete')"
+                      x-on:click.prevent="$dispatch('open-update-modal', {{ $prescription->id }})">
+                      Corriger les informations
+                    </x-dropdown-link>
+                    <x-dropdown-link x-on:click.prevent="$dispatch('open-delete-modal', {{ $prescription->id }})"
                       class="cursor-pointer text-red-600">
-                      Supprimer l'ordonnance</x-dropdown-link>
+                      Supprimer l'ordonnance
+                    </x-dropdown-link>
                   </x-slot>
                 </x-prescription-row>
               @endforeach
@@ -64,14 +80,9 @@
         </div>
 
         <x-modal name="save" maxWidth="7xl">
-          <form x-data="{ route: @js(route('prescriptions.store')) }" x-init="$watch(
-            'selected', function() { 
-              route = selected 
-              ? @js(route('prescriptions.update', '__ID__')).replace('__ID__', selected.id) 
-              : @js(route('prescriptions.store'))
-            })" class="px-6 py-4 grid grid-cols-2 gap-4 content-between" :action="route" method="POST">
+          <form :action="getSaveRoute()" method="POST" class="px-6 py-4 grid grid-cols-2 gap-4 content-between">
             @csrf
-            <template x-if="selected">
+            <template x-if="current">
               @method('PUT')
             </template>
 
@@ -84,20 +95,20 @@
                   <div>
                     <x-input-label class="mb-2" for="patient_first_name">Prénom</x-input-label>
                     <x-text-input required type="text" class="w-full" id="patient_first_name" name="patient_first_name"
-                      ::value="selected ? selected.patient_first_name : ''" />
+                      ::value="getInputValue('patient_first_name')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="patient_last_name">Nom</x-input-label>
                     <x-text-input required type="text" class="w-full" id="patient_last_name" name="patient_last_name"
-                      ::value="selected ? selected.patient_last_name : ''" />
+                      ::value="getInputValue('patient_last_name')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="patient_ssn">N° sécurité sociale (8 derniers
                       chiffres)</x-input-label>
                     <x-text-input required type="text" class="w-full" id="patient_ssn" name="patient_ssn"
-                      pattern="\d{8,13}" ::value="selected ? selected.patient_ssn : ''" />
+                      pattern="\d{8,13}" ::value="getInputValue('patient_ssn')" />
                   </div>
 
                   <div>
@@ -105,7 +116,7 @@
                       contact</x-input-label>
                     <select required id="patient_contact_method" name="patient_contact_method"
                       class="w-full border-gray-300 focus:border-primary focus:ring-primary rounded-md shadow-sm"
-                      ::value="selected ? selected.patient_contact_method : ''">
+                      ::value="getInputValue('patient_contact_method')">
                       <option value="email">Email</option>
                       <option value="phone_call">Appel téléphonique</option>
                       <option value="sms">SMS</option>
@@ -115,7 +126,7 @@
                   <div class="md:col-span-2">
                     <x-input-label class="mb-2" for="patient_contact_value">Valeur de contact</x-input-label>
                     <x-text-input required type="text" class="w-full" id="patient_contact_value"
-                      name="patient_contact_value" ::value="selected ? selected.patient_contact_value : ''" />
+                      name="patient_contact_value" ::value="getInputValue('patient_contact_value')" />
                   </div>
                 </div>
               </fieldset>
@@ -128,13 +139,13 @@
                   <div>
                     <x-input-label class="mb-2" for="doctor_first_name">Prénom</x-input-label>
                     <x-text-input required type="text" class="w-full" id="doctor_first_name" name="doctor_first_name"
-                      ::value="selected ? selected.doctor_first_name : ''" />
+                      ::value="getInputValue('doctor_first_name')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="doctor_last_name">Nom</x-input-label>
                     <x-text-input required type="text" class="w-full" id="doctor_last_name" name="doctor_last_name"
-                      ::value="selected ? selected.doctor_last_name : ''" />
+                      ::value="getInputValue('doctor_last_name')" />
                   </div>
                 </div>
               </fieldset>
@@ -148,51 +159,48 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                   <div>
                     <x-input-label class="mb-2" for="prescribed_at">Date de prescription</x-input-label>
-                    <x-text-input required type="date" class="w-full" id="prescribed_at" name="prescribed_at" ::value="selected && selected.prescribed_at
-                ? selected.prescribed_at.split('T')[0]
-                : ''" />
+                    <x-text-input required type="date" class="w-full" id="prescribed_at" name="prescribed_at"
+                      ::value="getInputValue('prescribed_at')?.split('T')[0]" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="validity_duration_in_months">Durée de validité
                       (mois)</x-input-label>
                     <x-text-input required type="number" min="1" class="w-full" id="validity_duration_in_months"
-                      name="validity_duration_in_months"
-                      ::value="selected ? selected.validity_duration_in_months : ''" />
+                      name="validity_duration_in_months" ::value="getInputValue('validity_duration_in_months')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="renewable_count">Nombre de
                       renouvellements</x-input-label>
                     <x-text-input required type="number" min="0" class="w-full" id="renewable_count"
-                      name="renewable_count" ::value="selected ? selected.renewable_count : ''" />
+                      name="renewable_count" ::value="getInputValue('renewable_count')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="dispensed_count">Nombre déjà délivré</x-input-label>
                     <x-text-input required type="number" min="0" class="w-full" id="dispensed_count"
-                      name="dispensed_count" ::value="selected ? selected.dispensed_count : ''" />
+                      name="dispensed_count" ::value="getInputValue('dispensed_count')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="last_dispensed_at">Dernière délivrance</x-input-label>
-                    <x-text-input type="date" class="w-full" id="last_dispensed_at" name="last_dispensed_at" ::value="selected && selected.last_dispensed_at
-                ? selected.last_dispensed_at.split('T')[0]
-                : ''" />
+                    <x-text-input type="date" class="w-full" id="last_dispensed_at" name="last_dispensed_at"
+                      ::value="getInputValue('last_dispensed_at')?.split('T')[0]" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="dispense_interval_days">Intervalle entre délivrances
                       (jours)</x-input-label>
                     <x-text-input required type="number" min="1" class="w-full" id="dispense_interval_days"
-                      name="dispense_interval_days" ::value="selected ? selected.dispense_interval_days : ''" />
+                      name="dispense_interval_days" ::value="getInputValue('dispense_interval_days')" />
                   </div>
 
                   <div class="md:col-span-2">
                     <x-input-label class="mb-2" for="notes">Notes</x-input-label>
                     <textarea rows="4" id="notes" name="notes"
                       class="w-full border-gray-300 focus:border-primary focus:ring-primary rounded-md shadow-sm"
-                      x-text="selected ? selected.notes : ''"></textarea>
+                      x-text="getInputValue('notes')"></textarea>
                   </div>
                 </div>
               </fieldset>
@@ -206,9 +214,9 @@
         </x-modal>
 
         <x-modal name="delete">
-          <form class="p-6" x-data="{ route: @js(route('prescriptions.store')) }" x-init="$watch('selected', function() { 
-              route = @js(route('prescriptions.destroy', '__ID__')).replace('__ID__', selected.id)})"
-            class="px-6 py-4 grid grid-cols-2 gap-4 content-between" :action="route" method="POST">
+          <form class="p-6" class="px-6 py-4 grid grid-cols-2 gap-4 content-between"
+            :action="current && @js(route('prescriptions.destroy', '__ID__')).replace('__ID__', current.id)"
+            method="POST">
             @csrf
             @method('DELETE')
 
@@ -232,6 +240,7 @@
 
           </form>
         </x-modal>
+
       </div>
     </div>
   </div>
