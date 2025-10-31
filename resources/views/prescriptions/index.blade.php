@@ -6,15 +6,17 @@
   </x-slot>
 
   @if ($errors->any())
-    <div class="bg-red-100 border border-red-200 shadow-md py-2 px-4 rounded">
-      <strong class="text-white">
-        {{ __('Des erreurs sont survenues :') }}
-      </strong>
-      <ul class="mt-2 text-white">
-        @foreach ($errors->all() as $message)
-          <li>{{ $message }}</li>
-        @endforeach
-      </ul>
+    <div class="bg-red-500 border border-red-700 shadow-md py-2 px-4 rounded">
+      <div class="max-w-7xl m-auto">
+        <strong class="text-white">
+          {{ __('Des erreurs sont survenues :') }}
+        </strong>
+        <ul class="mt-2 text-white">
+          @foreach ($errors->all() as $message)
+            <li>{{ $message }}</li>
+          @endforeach
+        </ul>
+      </div>
     </div>
   @endif
 
@@ -61,12 +63,16 @@
         </div>
 
         <x-modal name="save" maxWidth="7xl">
-          <form class="px-6 py-4 grid grid-cols-2 gap-4 content-between" action="{{ route('prescriptions.store') }}"
-            method="POST">
+          <form x-data="{ route: @js(route('prescriptions.store')) }" x-init="$watch(
+            'selected', function() { 
+              route = selected 
+              ? @js(route('prescriptions.update', '__ID__')).replace('__ID__', selected.id) 
+              : @js(route('prescriptions.store'))
+            })" class="px-6 py-4 grid grid-cols-2 gap-4 content-between" :action="route" method="POST">
             @csrf
-            <!-- <template x-if="selected">
+            <template x-if="selected">
               @method('PUT')
-            </template> -->
+            </template>
 
             <div class="flex flex-col justify-between">
               {{-- Section Patient --}}
