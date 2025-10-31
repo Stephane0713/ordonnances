@@ -1,0 +1,204 @@
+<x-app-layout>
+  <x-slot name="header">
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+      {{ __('Dashboard') }}
+    </h2>
+  </x-slot>
+
+  @if ($errors->any())
+    <div class="bg-red-100 border border-red-200 shadow-md py-2 px-4 rounded">
+      <strong class="text-white">
+        {{ __('Des erreurs sont survenues :') }}
+      </strong>
+      <ul class="mt-2 text-white">
+        @foreach ($errors->all() as $message)
+          <li>{{ $message }}</li>
+        @endforeach
+      </ul>
+    </div>
+  @endif
+
+  <div class="py-12">
+    <div class="max-w-7xl mx-auto sm:px-4 rounded-sm">
+      <div class="flex flex-col" x-data="{
+      selected: null,
+      prescriptions: @js($prescriptions),
+      select(id) { this.selected = this.prescriptions.data.find(p => p.id === id); }
+    }">
+        <x-primary-button class="inline-block justify-center ml-auto mb-6"
+          x-on:click.prevent="selected = null; $dispatch('open-modal', 'save')">Ajouter une
+          ordonnance</x-primary-button>
+        <div class="overflow-x-auto shadow-md sm:rounded">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-blue-100">
+              <tr>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Patient</th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">N° Sécurité sociale</th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Médecin</th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Prescrit le</th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Dernier le</th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Prévue le</th>
+                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">État</th>
+                <th class="px-4 py-2"></th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              @foreach($prescriptions as $prescription)
+                <x-prescription-row class="text-sm" :prescription="$prescription">
+                  <x-slot name="actions">
+                    <x-dropdown-link class="cursor-pointer">Classer préparé</x-dropdown-link>
+                    <x-dropdown-link class="cursor-pointer"
+                      x-on:click.prevent="select({{ $prescription->id }}); $dispatch('open-modal', 'save')">
+                      Corriger les informations</x-dropdown-link>
+                    <x-dropdown-link x-on:click.prevent="$dispatch('open-modal', 'delete')"
+                      class="cursor-pointer text-red-600">
+                      Supprimer l'ordonnance</x-dropdown-link>
+                  </x-slot>
+                </x-prescription-row>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+
+        <x-modal name="save" maxWidth="7xl">
+          <form class="px-6 py-4 grid grid-cols-2 gap-4 content-between" action="{{ route('prescriptions.store') }}"
+            method="POST">
+            @csrf
+            <!-- <template x-if="selected">
+              @method('PUT')
+            </template> -->
+
+            <div class="flex flex-col justify-between">
+              {{-- Section Patient --}}
+              <fieldset class="border border-gray-300 rounded-md p-4 mb-4">
+                <legend class="text-lg font-semibold">Patient</legend>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <x-input-label class="mb-2" for="patient_first_name">Prénom</x-input-label>
+                    <x-text-input type="text" class="w-full" id="patient_first_name" name="patient_first_name"
+                      ::value="selected ? selected.patient_first_name : ''" />
+                  </div>
+
+                  <div>
+                    <x-input-label class="mb-2" for="patient_last_name">Nom</x-input-label>
+                    <x-text-input type="text" class="w-full" id="patient_last_name" name="patient_last_name"
+                      ::value="selected ? selected.patient_last_name : ''" />
+                  </div>
+
+                  <div>
+                    <x-input-label class="mb-2" for="patient_ssn">Numéro de sécurité sociale</x-input-label>
+                    <x-text-input type="text" class="w-full" id="patient_ssn" name="patient_ssn"
+                      ::value="selected ? selected.patient_ssn : ''" />
+                  </div>
+
+                  <div>
+                    <x-input-label class="mb-2" for="patient_contact_method">Méthode de contact</x-input-label>
+                    <select id="patient_contact_method" name="patient_contact_method"
+                      class="w-full border-gray-300 focus:border-primary focus:ring-primary rounded-md shadow-sm"
+                      ::value="selected ? selected.patient_contact_method : ''">
+                      <option value="email">Email</option>
+                      <option value="phone_call">Appel téléphonique</option>
+                      <option value="sms">SMS</option>
+                    </select>
+                  </div>
+
+                  <div class="md:col-span-2">
+                    <x-input-label class="mb-2" for="patient_contact_value">Valeur de contact</x-input-label>
+                    <x-text-input type="text" class="w-full" id="patient_contact_value" name="patient_contact_value"
+                      ::value="selected ? selected.patient_contact_value : ''" />
+                  </div>
+                </div>
+              </fieldset>
+
+              {{-- Section Médecin --}}
+              <fieldset class="border border-gray-300 rounded-md p-4 mb-4">
+                <legend class="text-lg font-semibold">Médecin</legend>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <x-input-label class="mb-2" for="doctor_first_name">Prénom</x-input-label>
+                    <x-text-input type="text" class="w-full" id="doctor_first_name" name="doctor_first_name"
+                      ::value="selected ? selected.doctor_first_name : ''" />
+                  </div>
+
+                  <div>
+                    <x-input-label class="mb-2" for="doctor_last_name">Nom</x-input-label>
+                    <x-text-input type="text" class="w-full" id="doctor_last_name" name="doctor_last_name"
+                      ::value="selected ? selected.doctor_last_name : ''" />
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="flex flex-col">
+              {{-- Section Ordonnance --}}
+              <fieldset class="border border-gray-300 rounded-md p-4 mb-4">
+                <legend class="text-lg font-semibold">Ordonnance</legend>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <x-input-label class="mb-2" for="prescribed_at">Date de prescription</x-input-label>
+                    <x-text-input type="date" class="w-full" id="prescribed_at" name="prescribed_at" ::value="selected && selected.prescribed_at
+                ? selected.prescribed_at.split('T')[0]
+                : ''" />
+                  </div>
+
+                  <div>
+                    <x-input-label class="mb-2" for="validity_duration_in_months">Durée de validité
+                      (mois)</x-input-label>
+                    <x-text-input type="number" min="1" class="w-full" id="validity_duration_in_months"
+                      name="validity_duration_in_months"
+                      ::value="selected ? selected.validity_duration_in_months : ''" />
+                  </div>
+
+                  <div>
+                    <x-input-label class="mb-2" for="renewable_count">Nombre de renouvellements</x-input-label>
+                    <x-text-input type="number" min="0" class="w-full" id="renewable_count" name="renewable_count"
+                      ::value="selected ? selected.renewable_count : ''" />
+                  </div>
+
+                  <div>
+                    <x-input-label class="mb-2" for="dispensed_count">Nombre déjà délivré</x-input-label>
+                    <x-text-input type="number" min="0" class="w-full" id="dispensed_count" name="dispensed_count"
+                      ::value="selected ? selected.dispensed_count : ''" />
+                  </div>
+
+                  <div>
+                    <x-input-label class="mb-2" for="last_dispensed_at">Dernière délivrance</x-input-label>
+                    <x-text-input type="date" class="w-full" id="last_dispensed_at" name="last_dispensed_at" ::value="selected && selected.last_dispensed_at
+                ? selected.last_dispensed_at.split('T')[0]
+                : ''" />
+                  </div>
+
+                  <div>
+                    <x-input-label class="mb-2" for="dispense_interval_days">Intervalle entre délivrances
+                      (jours)</x-input-label>
+                    <x-text-input type="number" min="1" class="w-full" id="dispense_interval_days"
+                      name="dispense_interval_days" ::value="selected ? selected.dispense_interval_days : ''" />
+                  </div>
+
+                  <div class="md:col-span-2">
+                    <x-input-label class="mb-2" for="notes">Notes</x-input-label>
+                    <textarea rows="4" id="notes" name="notes"
+                      class="w-full border-gray-300 focus:border-primary focus:ring-primary rounded-md shadow-sm"
+                      x-text="selected ? selected.notes : ''"></textarea>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            <div class="ml-auto col-start-2">
+              <x-secondary-button class="inline-block justify-center mr-2"
+                x-on:click.prevent="$dispatch('close-modal', 'save')">Annuler</x-secondary-button>
+              <x-primary-button class="inline-block justify-center">Enregistrer</x-primary-button>
+            </div>
+          </form>
+        </x-modal>
+
+        <x-modal name="delete">
+          delete
+        </x-modal>
+      </div>
+    </div>
+  </div>
+</x-app-layout>
