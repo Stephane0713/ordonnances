@@ -4,7 +4,7 @@
   <td class="px-4 py-2 text-sm text-gray-800">{{ strtoupper($prescription->patient_last_name) }}
     {{ $prescription->patient_first_name }}
   </td>
-  <td class="px-4 py-2 text-sm text-gray-800">{{ $prescription->patient_ssn }}</td>
+  <td class="px-4 py-2 text-sm text-gray-800">*****{{ $prescription->patient_ssn }}</td>
   <td class="px-4 py-2 text-sm text-gray-800">{{ strtoupper($prescription->doctor_last_name) }}
     {{ $prescription->doctor_first_name }}
   </td>

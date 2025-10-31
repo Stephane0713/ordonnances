@@ -52,11 +52,14 @@ class Prescription extends Model
 
     public function setPatientSsnAttribute($value)
     {
-        $length = 8;
         $digits = preg_replace('/\D/', '', $value);
-        $lastDigits = substr($digits, -$length);
-        $masked = str_repeat('x', strlen($digits) - $length) . $lastDigits;
-        $this->attributes['patient_ssn'] = $masked;
+        $this->attributes['patient_ssn'] = substr($digits, -8);
+    }
+
+    public function getSSN()
+    {
+        $ssn = (string) $this->patient_ssn;
+        return str_pad($ssn, 13, '•', STR_PAD_LEFT);
     }
 
     public function getProgression(): string

@@ -24,7 +24,7 @@ class StorePrescriptionRequest extends FormRequest
         return [
             'patient_first_name' => 'required|string|max:255',
             'patient_last_name' => 'required|string|max:255',
-            'patient_ssn' => 'required|string|size:13',
+            'patient_ssn' => 'required|numeric|digits_between:8,13',
             'patient_contact_method' => 'required|in:email,phone_call,sms',
             'patient_contact_value' => 'required|string|max:255',
             'doctor_first_name' => 'required|string|max:255',

@@ -82,25 +82,27 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                   <div>
                     <x-input-label class="mb-2" for="patient_first_name">Prénom</x-input-label>
-                    <x-text-input type="text" class="w-full" id="patient_first_name" name="patient_first_name"
+                    <x-text-input required type="text" class="w-full" id="patient_first_name" name="patient_first_name"
                       ::value="selected ? selected.patient_first_name : ''" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="patient_last_name">Nom</x-input-label>
-                    <x-text-input type="text" class="w-full" id="patient_last_name" name="patient_last_name"
+                    <x-text-input required type="text" class="w-full" id="patient_last_name" name="patient_last_name"
                       ::value="selected ? selected.patient_last_name : ''" />
                   </div>
 
                   <div>
-                    <x-input-label class="mb-2" for="patient_ssn">Numéro de sécurité sociale</x-input-label>
-                    <x-text-input type="text" class="w-full" id="patient_ssn" name="patient_ssn"
-                      ::value="selected ? selected.patient_ssn : ''" />
+                    <x-input-label class="mb-2" for="patient_ssn">N° sécurité sociale (8 derniers
+                      chiffres)</x-input-label>
+                    <x-text-input required type="text" class="w-full" id="patient_ssn" name="patient_ssn"
+                      pattern="\d{8,13}" ::value="selected ? selected.patient_ssn : ''" />
                   </div>
 
                   <div>
-                    <x-input-label class="mb-2" for="patient_contact_method">Méthode de contact</x-input-label>
-                    <select id="patient_contact_method" name="patient_contact_method"
+                    <x-input-label class="mb-2" for="patient_contact_method">Méthode de
+                      contact</x-input-label>
+                    <select required id="patient_contact_method" name="patient_contact_method"
                       class="w-full border-gray-300 focus:border-primary focus:ring-primary rounded-md shadow-sm"
                       ::value="selected ? selected.patient_contact_method : ''">
                       <option value="email">Email</option>
@@ -111,8 +113,8 @@
 
                   <div class="md:col-span-2">
                     <x-input-label class="mb-2" for="patient_contact_value">Valeur de contact</x-input-label>
-                    <x-text-input type="text" class="w-full" id="patient_contact_value" name="patient_contact_value"
-                      ::value="selected ? selected.patient_contact_value : ''" />
+                    <x-text-input required type="text" class="w-full" id="patient_contact_value"
+                      name="patient_contact_value" ::value="selected ? selected.patient_contact_value : ''" />
                   </div>
                 </div>
               </fieldset>
@@ -124,13 +126,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                   <div>
                     <x-input-label class="mb-2" for="doctor_first_name">Prénom</x-input-label>
-                    <x-text-input type="text" class="w-full" id="doctor_first_name" name="doctor_first_name"
+                    <x-text-input required type="text" class="w-full" id="doctor_first_name" name="doctor_first_name"
                       ::value="selected ? selected.doctor_first_name : ''" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="doctor_last_name">Nom</x-input-label>
-                    <x-text-input type="text" class="w-full" id="doctor_last_name" name="doctor_last_name"
+                    <x-text-input required type="text" class="w-full" id="doctor_last_name" name="doctor_last_name"
                       ::value="selected ? selected.doctor_last_name : ''" />
                   </div>
                 </div>
@@ -145,7 +147,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                   <div>
                     <x-input-label class="mb-2" for="prescribed_at">Date de prescription</x-input-label>
-                    <x-text-input type="date" class="w-full" id="prescribed_at" name="prescribed_at" ::value="selected && selected.prescribed_at
+                    <x-text-input required type="date" class="w-full" id="prescribed_at" name="prescribed_at" ::value="selected && selected.prescribed_at
                 ? selected.prescribed_at.split('T')[0]
                 : ''" />
                   </div>
@@ -153,21 +155,22 @@
                   <div>
                     <x-input-label class="mb-2" for="validity_duration_in_months">Durée de validité
                       (mois)</x-input-label>
-                    <x-text-input type="number" min="1" class="w-full" id="validity_duration_in_months"
+                    <x-text-input required type="number" min="1" class="w-full" id="validity_duration_in_months"
                       name="validity_duration_in_months"
                       ::value="selected ? selected.validity_duration_in_months : ''" />
                   </div>
 
                   <div>
-                    <x-input-label class="mb-2" for="renewable_count">Nombre de renouvellements</x-input-label>
-                    <x-text-input type="number" min="0" class="w-full" id="renewable_count" name="renewable_count"
-                      ::value="selected ? selected.renewable_count : ''" />
+                    <x-input-label class="mb-2" for="renewable_count">Nombre de
+                      renouvellements</x-input-label>
+                    <x-text-input required type="number" min="0" class="w-full" id="renewable_count"
+                      name="renewable_count" ::value="selected ? selected.renewable_count : ''" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="dispensed_count">Nombre déjà délivré</x-input-label>
-                    <x-text-input type="number" min="0" class="w-full" id="dispensed_count" name="dispensed_count"
-                      ::value="selected ? selected.dispensed_count : ''" />
+                    <x-text-input required type="number" min="0" class="w-full" id="dispensed_count"
+                      name="dispensed_count" ::value="selected ? selected.dispensed_count : ''" />
                   </div>
 
                   <div>
@@ -180,7 +183,7 @@
                   <div>
                     <x-input-label class="mb-2" for="dispense_interval_days">Intervalle entre délivrances
                       (jours)</x-input-label>
-                    <x-text-input type="number" min="1" class="w-full" id="dispense_interval_days"
+                    <x-text-input required type="number" min="1" class="w-full" id="dispense_interval_days"
                       name="dispense_interval_days" ::value="selected ? selected.dispense_interval_days : ''" />
                   </div>
 
