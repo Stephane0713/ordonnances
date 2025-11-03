@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('patient_first_name');
             $table->string('patient_last_name');
             $table->string('patient_ssn');
-            $table->enum('patient_contact_method', ['email', 'phone_call', 'sms']);
+            $table->enum('patient_contact_method', ['email', 'call', 'sms']);
             $table->string('patient_contact_value');
 
             // --- Doctor info ---

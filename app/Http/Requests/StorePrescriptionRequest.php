@@ -25,8 +25,23 @@ class StorePrescriptionRequest extends FormRequest
             'patient_first_name' => 'required|string|max:255',
             'patient_last_name' => 'required|string|max:255',
             'patient_ssn' => 'required|numeric|digits_between:8,13',
-            'patient_contact_method' => 'required|in:email,phone_call,sms',
-            'patient_contact_value' => 'required|string|max:255',
+            'patient_contact_method' => 'required|in:email,call,sms',
+            'patient_contact_value' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $method = request('patient_contact_method');
+
+                    if ($method === 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                        $fail('Le champ doit être une adresse email valide.');
+                    }
+
+                    if (in_array($method, ['call', 'sms']) && !preg_match('/^0\d{9}$/', $value)) {
+                        $fail('Le champ doit être un numéro de téléphone valide (format : 0XXXXXXXXX).');
+                    }
+                },
+            ],
             'doctor_first_name' => 'required|string|max:255',
             'doctor_last_name' => 'required|string|max:255',
             'prescribed_at' => 'required|date',

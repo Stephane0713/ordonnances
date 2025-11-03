@@ -34,8 +34,9 @@
           ? @js(route('prescriptions.store')) 
           : @js(route('prescriptions.update', '__ID__')).replace('__ID__', this.current.id);
         },
+        defaultValues: @js(config('defaults')),
         getInputValue(field) {
-          return this.current && this.current[field] || '';
+          return this.current && this.current[field] || this.defaultValues[field];
         }
       }" x-on:open-store-modal.window="openModal('save')"
         x-on:open-update-modal.window="openModal('save', $event.detail)"
@@ -95,31 +96,32 @@
                   <div>
                     <x-input-label class="mb-2" for="patient_first_name">Prénom</x-input-label>
                     <x-text-input required type="text" class="w-full" id="patient_first_name" name="patient_first_name"
-                      ::value="getInputValue('patient_first_name')" />
+                      placeholder="John" ::value="getInputValue('patient_first_name')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="patient_last_name">Nom</x-input-label>
                     <x-text-input required type="text" class="w-full" id="patient_last_name" name="patient_last_name"
-                      ::value="getInputValue('patient_last_name')" />
+                      placeholder="Doe" ::value="getInputValue('patient_last_name')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="patient_ssn">N° sécurité sociale (8 derniers
                       chiffres)</x-input-label>
                     <x-text-input required type="text" class="w-full" id="patient_ssn" name="patient_ssn"
-                      pattern="\d{8,13}" ::value="getInputValue('patient_ssn')" />
+                      pattern="\d{8,13}" placeholder="12345678" ::value="getInputValue('patient_ssn')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="patient_contact_method">Méthode de
                       contact</x-input-label>
                     <select required id="patient_contact_method" name="patient_contact_method"
-                      class="w-full border-gray-300 focus:border-primary focus:ring-primary rounded-md shadow-sm"
-                      ::value="getInputValue('patient_contact_method')">
-                      <option value="email">Email</option>
-                      <option value="phone_call">Appel téléphonique</option>
-                      <option value="sms">SMS</option>
+                      class="w-full border-gray-300 focus:border-primary focus:ring-primary rounded-md shadow-sm">
+                      <option value="email" :selected="getInputValue('patient_contact_method') === 'email'">Email
+                      </option>
+                      <option value="call" :selected="getInputValue('patient_contact_method') === 'call'">Appel
+                        téléphonique</option>
+                      <option value="sms" :selected="getInputValue('patient_contact_method') === 'sms'">SMS</option>
                     </select>
                   </div>
 
@@ -139,13 +141,13 @@
                   <div>
                     <x-input-label class="mb-2" for="doctor_first_name">Prénom</x-input-label>
                     <x-text-input required type="text" class="w-full" id="doctor_first_name" name="doctor_first_name"
-                      ::value="getInputValue('doctor_first_name')" />
+                      placeholder="John" ::value="getInputValue('doctor_first_name')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="doctor_last_name">Nom</x-input-label>
                     <x-text-input required type="text" class="w-full" id="doctor_last_name" name="doctor_last_name"
-                      ::value="getInputValue('doctor_last_name')" />
+                      placeholder="Doe" ::value="getInputValue('doctor_last_name')" />
                   </div>
                 </div>
               </fieldset>
@@ -160,47 +162,49 @@
                   <div>
                     <x-input-label class="mb-2" for="prescribed_at">Date de prescription</x-input-label>
                     <x-text-input required type="date" class="w-full" id="prescribed_at" name="prescribed_at"
-                      ::value="getInputValue('prescribed_at')?.split('T')[0]" />
+                      placeholder="2022-01-01" ::value="getInputValue('prescribed_at')?.split('T')[0]" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="validity_duration_in_months">Durée de validité
                       (mois)</x-input-label>
                     <x-text-input required type="number" min="1" class="w-full" id="validity_duration_in_months"
-                      name="validity_duration_in_months" ::value="getInputValue('validity_duration_in_months')" />
+                      name="validity_duration_in_months" placeholder="3"
+                      ::value="getInputValue('validity_duration_in_months')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="renewable_count">Nombre de
                       renouvellements</x-input-label>
                     <x-text-input required type="number" min="0" class="w-full" id="renewable_count"
-                      name="renewable_count" ::value="getInputValue('renewable_count')" />
+                      name="renewable_count" placeholder="6" ::value="getInputValue('renewable_count')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="dispensed_count">Nombre déjà délivré</x-input-label>
                     <x-text-input required type="number" min="0" class="w-full" id="dispensed_count"
-                      name="dispensed_count" ::value="getInputValue('dispensed_count')" />
+                      name="dispensed_count" placeholder="0" ::value="getInputValue('dispensed_count')" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="last_dispensed_at">Dernière délivrance</x-input-label>
                     <x-text-input type="date" class="w-full" id="last_dispensed_at" name="last_dispensed_at"
-                      ::value="getInputValue('last_dispensed_at')?.split('T')[0]" />
+                      placeholder="2022-01-01" ::value="getInputValue('last_dispensed_at')?.split('T')[0]" />
                   </div>
 
                   <div>
                     <x-input-label class="mb-2" for="dispense_interval_days">Intervalle entre délivrances
                       (jours)</x-input-label>
                     <x-text-input required type="number" min="1" class="w-full" id="dispense_interval_days"
-                      name="dispense_interval_days" ::value="getInputValue('dispense_interval_days')" />
+                      name="dispense_interval_days" placeholder="30"
+                      ::value="getInputValue('dispense_interval_days')" />
                   </div>
 
                   <div class="md:col-span-2">
                     <x-input-label class="mb-2" for="notes">Notes</x-input-label>
                     <textarea rows="4" id="notes" name="notes"
                       class="w-full border-gray-300 focus:border-primary focus:ring-primary rounded-md shadow-sm"
-                      x-text="getInputValue('notes')"></textarea>
+                      placeholder="Notes sur l'ordonnance" x-text="getInputValue('notes')"></textarea>
                   </div>
                 </div>
               </fieldset>
