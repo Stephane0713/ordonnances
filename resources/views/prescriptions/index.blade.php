@@ -75,15 +75,6 @@
                     @else
                       <x-dropdown-link class="cursor-pointer">Classer délivrée</x-dropdown-link>
                     @endif
-                    @if($prescription->patient_contact_method === "email")
-                      <x-dropdown-link class="cursor-pointer">Envoyer un mail</x-dropdown-link>
-                    @elseif($prescription->patient_contact_method === "sms")
-                      <x-dropdown-link class="cursor-pointer">Envoyer un sms</x-dropdown-link>
-                    @elseif($prescription->patient_contact_method === "call")
-                      <x-dropdown-link class="cursor-pointer"
-                        href="tel:{{ $prescription->patient_contact_value  }}'">Appeler le
-                        {{ $prescription->patient_contact_value }}</x-dropdown-link>
-                    @endif
                     <x-dropdown-link class="cursor-pointer"
                       x-on:click.prevent="$dispatch('open-update-modal', {{ $prescription->id }})">
                       Corriger les informations
