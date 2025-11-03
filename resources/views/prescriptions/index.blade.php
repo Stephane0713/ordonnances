@@ -37,6 +37,12 @@
         defaultValues: @js(config('defaults')),
         getInputValue(field) {
           return this.current && this.current[field] || this.defaultValues[field];
+        },
+        getContactPlaceholder(method) {
+          return method === 'email' ? 'john@doe.com' : '0612345678';
+        },
+        getContactPattern(method) {
+          return method === 'email' ? '^[^@\s]+@[^@\s]+\.[^@\s]+$' : '0[1-9][0-9]{8}';
         }
       }" x-on:open-store-modal.window="openModal('save')"
         x-on:open-update-modal.window="openModal('save', $event.detail)"
@@ -115,8 +121,11 @@
                   <div>
                     <x-input-label class="mb-2" for="patient_contact_method">Méthode de
                       contact</x-input-label>
-                    <select required id="patient_contact_method" name="patient_contact_method"
-                      class="w-full border-gray-300 focus:border-primary focus:ring-primary rounded-md shadow-sm">
+                    <select required id="patient_contact_method" name="patient_contact_method" x-on:change="
+                        $refs.contact_value.value = '';
+                        $refs.contact_value.placeholder = getContactPlaceholder($event.target.value);
+                        $refs.contact_value.pattern = getContactPattern($event.target.value);
+                      " class="w-full border-gray-300 focus:border-primary focus:ring-primary rounded-md shadow-sm">
                       <option value="email" :selected="getInputValue('patient_contact_method') === 'email'">Email
                       </option>
                       <option value="call" :selected="getInputValue('patient_contact_method') === 'call'">Appel
@@ -127,8 +136,10 @@
 
                   <div class="md:col-span-2">
                     <x-input-label class="mb-2" for="patient_contact_value">Valeur de contact</x-input-label>
-                    <x-text-input required type="text" class="w-full" id="patient_contact_value"
-                      name="patient_contact_value" ::value="getInputValue('patient_contact_value')" />
+                    <x-text-input x-ref="contact_value" required type="text" class="w-full" id="patient_contact_value"
+                      name="patient_contact_value" ::value="getInputValue('patient_contact_value')"
+                      ::placeholder="getContactPlaceholder(getInputValue('patient_contact_method'))"
+                      ::pattern="getContactPattern(getInputValue('patient_contact_method'))" />
                   </div>
                 </div>
               </fieldset>
