@@ -1,6 +1,6 @@
 @props(['prescriptions'])
 
-<div class="overflow-x-auto shadow-md sm:rounded">
+<div class="shadow-md sm:rounded">
   <table class="min-w-full divide-y divide-gray-200">
     <thead class="bg-blue-100">
       <tr>
@@ -19,9 +19,13 @@
         <x-prescriptions.row class="text-sm" :prescription="$prescription">
           <x-slot name="actions">
             @if ($prescription->status === 'to_prepare')
-              <x-dropdown-link class="cursor-pointer">Classer préparée</x-dropdown-link>
+              <x-dropdown-link class="cursor-pointer"
+                x-on:click.prevent="$dispatch('open-prepare-modal', {{ $prescription->id }})">Classer
+                préparée</x-dropdown-link>
             @else
-              <x-dropdown-link class="cursor-pointer">Classer délivrée</x-dropdown-link>
+              <x-dropdown-link class="cursor-pointer"
+                x-on:click.prevent="$dispatch('open-deliver-modal', {{ $prescription->id }})">Classer
+                délivrée</x-dropdown-link>
             @endif
             <x-dropdown-link class="cursor-pointer"
               x-on:click.prevent="$dispatch('open-update-modal', {{ $prescription->id }})">

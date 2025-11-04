@@ -24,20 +24,30 @@ class PrescriptionController extends Controller
         $prescription->save();
 
         return redirect()->route('prescriptions.index')
-            ->with('success', 'Prescription créée avec succès.');
+            ->with('success', 'Ordonnance créée avec succès.');
     }
 
     public function update(StorePrescriptionRequest $request, Prescription $prescription)
     {
         $prescription->update($request->validated());
         return redirect()->route('prescriptions.index')
-            ->with('success', 'Prescription mise à jour.');
+            ->with('success', 'Ordonnance mise à jour.');
     }
 
     public function destroy(Prescription $prescription)
     {
         $prescription->delete();
         return redirect()->route('prescriptions.index')
-            ->with('success', 'Prescription supprimée.');
+            ->with('success', 'Ordonnance supprimée.');
+    }
+    public function prepare(Prescription $prescription)
+    {
+        return redirect()->route('prescriptions.index')
+            ->with('success', 'Ordonnance préparée.');
+    }
+    public function deliver(Prescription $prescription)
+    {
+        return redirect()->route('prescriptions.index')
+            ->with('success', 'Ordonnance délivrée.');
     }
 }

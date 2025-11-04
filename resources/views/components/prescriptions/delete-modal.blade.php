@@ -5,11 +5,11 @@
     @method('DELETE')
 
     <h2 class="text-lg font-medium text-gray-900">
-      Êtes vous sur de vouloir supprimer l'odonnance ?
+      Êtes vous sur de vouloir supprimer l'ordonnance ?
     </h2>
 
     <p class="mt-1 text-sm text-gray-600">
-      Cette action est définitive, il est impossible de restaurer l'odonnance une fois qu'elle a été supprimée.
+      Cette action est définitive, il est impossible de restaurer l'ordonnance une fois qu'elle a été supprimée.
     </p>
 
     <div class="mt-6 flex justify-end">
