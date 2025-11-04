@@ -43,6 +43,11 @@
         },
         getContactPattern(method) {
           return method === 'email' ? '^[^@\s]+@[^@\s]+\.[^@\s]+$' : '0[1-9][0-9]{8}';
+        },
+        getNextDeliveryDate() {
+          const date = new Date();
+          date.setDate(date.getDate() + this.current?.dispense_interval_days || 28);
+          return date;
         }
       }" x-on:open-store-modal.window="openModal('save')"
         x-on:open-update-modal.window="openModal('save', $event.detail)"

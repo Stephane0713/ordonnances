@@ -5,11 +5,16 @@
     @method('PUT')
 
     <h2 class="text-lg font-medium text-gray-900">
-      Titre
+      Classer délivrée ?
     </h2>
 
     <p class="mt-1 text-sm text-gray-600">
-      Description
+      Classer l'ordonnance de <span
+        x-text="`${current?.patient_first_name} ${current?.patient_last_name.toUpperCase()}`"></span> comme délivrée ?
+    </p>
+
+    <p class="mt-1 text-sm text-gray-600">
+      Prochaine délivrance prévue le <span x-text="getNextDeliveryDate().toLocaleDateString('fr-FR')"></span>.
     </p>
 
     <div class="mt-6 flex justify-end">

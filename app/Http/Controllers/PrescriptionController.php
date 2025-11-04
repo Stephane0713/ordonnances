@@ -42,11 +42,24 @@ class PrescriptionController extends Controller
     }
     public function prepare(Prescription $prescription)
     {
+        $prescription->update(['status' => 'to_deliver']);
         return redirect()->route('prescriptions.index')
             ->with('success', 'Ordonnance préparée.');
     }
     public function deliver(Prescription $prescription)
     {
+        $dispensedCount = $prescription->dispensed_count + 1;
+        $status = $dispensedCount < $prescription->renewable_count
+            ? 'to_prepare'
+            : 'closed';
+
+        $attr = [
+            'status' => $status,
+            'last_dispensed_at' => Carbon::now(),
+            'dispensed_count' => $dispensedCount
+        ];
+
+        $prescription->update($attr);
         return redirect()->route('prescriptions.index')
             ->with('success', 'Ordonnance délivrée.');
     }
