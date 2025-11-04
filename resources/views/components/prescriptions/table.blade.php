@@ -32,7 +32,7 @@
               Supprimer l'ordonnance
             </x-dropdown-link>
           </x-slot>
-          </x-prescription-row>
+        </x-prescriptions.row>
       @endforeach
     </tbody>
   </table>
