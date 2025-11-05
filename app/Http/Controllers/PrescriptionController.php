@@ -40,12 +40,14 @@ class PrescriptionController extends Controller
         return redirect()->route('prescriptions.index')
             ->with('success', 'Ordonnance supprimée.');
     }
+
     public function prepare(Prescription $prescription)
     {
         $prescription->update(['status' => 'to_deliver']);
         return redirect()->route('prescriptions.index')
             ->with('success', 'Ordonnance préparée.');
     }
+
     public function deliver(Prescription $prescription)
     {
         $dispensedCount = $prescription->dispensed_count + 1;
