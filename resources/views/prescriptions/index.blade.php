@@ -42,7 +42,7 @@
           return method === 'email' ? 'john@doe.com' : '0612345678';
         },
         getContactPattern(method) {
-          return method === 'email' ? '^[^@\s]+@[^@\s]+\.[^@\s]+$' : '0[1-9][0-9]{8}';
+          return method === 'email' ? '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' : '0[1-9][0-9]{8}';
         },
         getNextDeliveryDate() {
           const date = new Date();

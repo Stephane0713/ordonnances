@@ -28,7 +28,7 @@ class PrescriptionFactory extends Factory
             'patient_contact_method' => $method = $this->faker->randomElement(['email', 'call', 'sms']),
             'patient_contact_value' => match ($method) {
                 'email' => $this->faker->safeEmail(),
-                'call', 'sms' => '0' . $this->faker->numerify('#########'),
+                'call', 'sms' => '0' . $this->faker->numerify('6########'),
             },
             'doctor_first_name' => $this->faker->firstName,
             'doctor_last_name' => $this->faker->lastName,
