@@ -59,7 +59,39 @@
           x-on:click.prevent="$dispatch('open-store-modal')">
           Ajouter une ordonnance</x-primary-button>
 
-        <x-prescriptions.table :prescriptions="$prescriptions" />
+        <form action="{{ route('prescriptions.index') }}" class="p-4 flex items-end gap-2 bg-white rounded shadow mb-4">
+          <input type="hidden" name="display" value="all">
+          <div class="flex-1">
+            <x-input-label class="mb-2" for="patient_search">Patient</x-input-label>
+            <x-text-input type="text" class="w-full" id="patient_search" name="patient_search"
+              placeholder="Nom, Prénom ou N° de sécurité sociale" value="{{ request('patient_search') }}" />
+          </div>
+          <div class="flex-1">
+            <x-input-label class="mb-2" for="doctor_search">Médecin</x-input-label>
+            <x-text-input type="text" class="w-full" id="doctor_search" name="doctor_search" placeholder="Nom ou Prénom"
+              value="{{ request('doctor_search') }}" />
+          </div>
+          <div>
+            <x-input-label class="mb-2" for="prescribed_from">Prescrit entre le</x-input-label>
+            <x-text-input type="date" class="w-full" id="prescribed_from" name="prescribed_from"
+              value="{{ request('prescribed_from') }}" />
+          </div>
+          <div>
+            <x-input-label class="mb-2" for="prescribed_to">et le</x-input-label>
+            <x-text-input type="date" class="w-full" id="prescribed_to" name="prescribed_to"
+              value="{{ request('prescribed_to') }}" />
+          </div>
+          <x-secondary-button class="py-2" x-on:click.prevent="window.location='{{ route('prescriptions.index') }}'">
+            <i class="fa-solid fa-xmark text-base"></i></x-secondary-button>
+          <x-primary-button class="py-2"><i class="fa-solid fa-magnifying-glass text-base"></i></x-primary-button>
+        </form>
+
+        @if($prescriptions->count() > 0)
+          <x-prescriptions.table :prescriptions="$prescriptions" />
+        @else
+          <p class="py-12 text-center bg-white text-gray-500 border rounded shadow mt-2">Aucun résultats...</p>
+        @endif
+
         <x-prescriptions.save-modal />
         <x-prescriptions.delete-modal />
         <x-prescriptions.prepare-modal />

@@ -4,15 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePrescriptionRequest;
 use App\Models\Prescription;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 class PrescriptionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $prescriptions = Prescription::where('next_dispense_at', '<=', Carbon::now()->addDays(7))
+        $query = Prescription::query();
+
+        if ($request->get('display') !== 'all') {
+            $query->where('next_dispense_at', '<=', Carbon::now()->addDays(7));
+        }
+
+        $query->when($request->filled('patient_search'), function ($q) use ($request) {
+            $q->where(function ($subQuery) use ($request) {
+                $subQuery->where('patient_last_name', 'like', '%' . $request->patient_search . '%')
+                    ->orWhere('patient_first_name', 'like', '%' . $request->patient_search . '%')
+                    ->orWhere('patient_ssn', 'like', '%' . $request->patient_search . '%');
+            });
+        });
+
+        $query->when($request->filled('doctor_search'), function ($q) use ($request) {
+            $q->where(function ($subQuery) use ($request) {
+                $subQuery->where('doctor_last_name', 'like', '%' . $request->doctor_search . '%')
+                    ->orWhere('doctor_first_name', 'like', '%' . $request->doctor_search . '%');
+            });
+        });
+
+        $query->when($request->filled('prescribed_from'), function ($q) use ($request) {
+            $q->whereDate('prescribed_at', '>=', $request->prescribed_from);
+        });
+
+        $query->when($request->filled('prescribed_to'), function ($q) use ($request) {
+            $q->whereDate('prescribed_at', '<=', $request->prescribed_to);
+        });
+
+        $prescriptions = $query
             ->orderBy('next_dispense_at')
-            ->paginate(20);
+            ->paginate(20)
+            ->appends($request->query());
 
         return view('prescriptions.index', compact('prescriptions'));
     }
