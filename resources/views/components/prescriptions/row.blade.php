@@ -1,18 +1,26 @@
 @props(['prescription'])
 
-<tr {{ $attributes->merge(['class' => 'hover:bg-gray-50']) }}>
-  <td class="px-4 py-2 text-sm text-gray-800">{{ strtoupper($prescription->patient_last_name) }}
+@php
+  $styles = $prescription->isLate()
+    ? 'bg-red-50 hover:bg-red-100 text-gray-800'
+    : ($prescription->status === 'closed'
+      ? 'bg-gray-100 text-gray-200'
+      : 'hover:bg-gray-50 text-gray-800');
+@endphp
+
+<tr {{ $attributes->merge(['class' => $styles]) }}>
+  <td class="px-4 py-2 text-sm">{{ strtoupper($prescription->patient_last_name) }}
     {{ $prescription->patient_first_name }}
   </td>
-  <td class="px-4 py-2 text-sm text-gray-800">*****{{ $prescription->patient_ssn }}</td>
-  <td class="px-4 py-2 text-sm text-gray-800">{{ strtoupper($prescription->doctor_last_name) }}
+  <td class="px-4 py-2 text-sm">{{ $prescription->getSSN() }}</td>
+  <td class="px-4 py-2 text-sm">{{ strtoupper($prescription->doctor_last_name) }}
     {{ $prescription->doctor_first_name }}
   </td>
-  <td class="px-4 py-2 text-sm text-gray-800">{{ $prescription->prescribed_at->format('d/m/Y') }}</td>
-  <td class="px-4 py-2 text-sm text-gray-800">{{ $prescription->last_dispensed_at?->format('d/m/Y') }}</td>
-  <td class="px-4 py-2 text-sm text-gray-800">{{ $prescription->next_dispense_at?->format('d/m/Y') }}</td>
-  <td class="px-4 py-2 text-sm text-gray-800">{{ $prescription->getProgression() }}</td>
-  <td class="text-right px-4 py-2 text-sm text-gray-800">
+  <td class="px-4 py-2 text-sm">{{ $prescription->prescribed_at->format('d/m/Y') }}</td>
+  <td class="px-4 py-2 text-sm">{{ $prescription->last_dispensed_at?->format('d/m/Y') }}</td>
+  <td class="px-4 py-2 text-sm">{{ $prescription->next_dispense_at?->format('d/m/Y') }}</td>
+  <td class="px-4 py-2 text-sm">{{ $prescription->getProgression() }}</td>
+  <td class="text-right px-4 py-2 text-sm">
     <x-dropdown align="right" width="48">
       <x-slot name="trigger">
         <button

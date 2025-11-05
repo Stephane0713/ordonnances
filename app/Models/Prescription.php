@@ -38,10 +38,9 @@ class Prescription extends Model
     protected static function booted()
     {
         static::saving(function (self $model) {
-            $validUntil = $model->prescribed_at->copy()->addMonths($model->validity_duration_in_months);
-
-            if ($model->dispensed_count >= $model->renewable_count || now()->gt($validUntil)) {
+            if ($model->isExpired() || !$model->hasRenewableLeft()) {
                 $model->next_dispense_at = null;
+                $model->status = 'closed';
                 return;
             }
 
@@ -59,40 +58,57 @@ class Prescription extends Model
     public function getSSN()
     {
         $ssn = (string) $this->patient_ssn;
-        return str_pad($ssn, 13, '•', STR_PAD_LEFT);
+        return str_pad($ssn, 13, '*', STR_PAD_LEFT);
+    }
+
+    public function hasRenewableLeft(): bool
+    {
+        return ($this->renewable_count - $this->dispensed_count) > 0;
+    }
+
+    public function validUntil()
+    {
+        return $this->prescribed_at->copy()->addMonths($this->validity_duration_in_months);
+    }
+
+    public function isExpired(): bool
+    {
+        return now()->gt($this->validUntil());
+    }
+
+    public function isLate(): bool
+    {
+        return $this->next_dispense_at && now()->gt($this->next_dispense_at);
+    }
+
+    public function isPending(): bool
+    {
+        return in_array($this->status, ['to_prepare', 'to_deliver']) && !$this->isLate();
     }
 
     public function getProgression(): string
     {
-        $now = now();
-        $validUntil = $this->prescribed_at->copy()->addMonths($this->validity_duration_in_months);
-        $daysUntilNext = $this->next_dispense_at ? $now->diffInDays($this->next_dispense_at, false) : null;
-
-        if ($this->status === 'cancelled') {
-            return 'Annulé';
-        }
-
-        if ($this->dispensed_count >= $this->renewable_count) {
+        if ($this->status === 'closed') {
             return 'Clôturé';
         }
 
-        if ($now->gt($validUntil)) {
+        if ($this->isExpired()) {
             return 'Expiré';
         }
 
-        if ($this->status === 'to_prepare' && $daysUntilNext < 0) {
+        if ($this->status === 'to_prepare' && $this->isLate()) {
             return 'En retard de préparation';
         }
 
-        if ($this->status === 'to_deliver' && $daysUntilNext < 0) {
+        if ($this->status === 'to_deliver' && $this->isLate()) {
             return 'En retard de délivrance';
         }
 
-        if ($this->status === 'to_prepare' && $daysUntilNext !== null && $daysUntilNext < 7) {
+        if ($this->status === 'to_prepare' && $this->isPending()) {
             return 'En attente de préparation';
         }
 
-        if ($this->status === 'to_deliver') {
+        if ($this->status === 'to_deliver' && $this->isPending()) {
             return 'En attente de délivrance';
         }
 
