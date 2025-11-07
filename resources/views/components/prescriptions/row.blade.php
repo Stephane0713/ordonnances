@@ -4,7 +4,7 @@
   $styles = $prescription->isLate()
     ? 'bg-red-50 hover:bg-red-100 text-gray-800'
     : ($prescription->status === 'closed'
-      ? 'bg-gray-100 text-gray-200'
+      ? 'bg-gray-100 text-gray-400'
       : 'hover:bg-gray-50 text-gray-800');
 @endphp
 
