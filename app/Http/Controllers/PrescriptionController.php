@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePrescriptionRequest;
 use App\Models\Prescription;
+use App\Services\PrescriptionNotifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -72,28 +73,39 @@ class PrescriptionController extends Controller
             ->with('success', 'Ordonnance supprimée.');
     }
 
-    public function prepare(Prescription $prescription)
+    public function prepare(Prescription $prescription, PrescriptionNotifier $notifier)
     {
-        $prescription->update(['status' => 'to_deliver']);
-        return redirect()->route('prescriptions.index')
-            ->with('success', 'Ordonnance préparée.');
+        try {
+            $prescription->update(['status' => 'to_deliver']);
+            $notifier->send($prescription);
+
+            return redirect()->route('prescriptions.index')
+                ->with('success', 'Ordonnance préparée.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
+        }
     }
 
-    public function deliver(Prescription $prescription)
+    public function deliver(Prescription $prescription, PrescriptionNotifier $notifier)
     {
-        $dispensedCount = $prescription->dispensed_count + 1;
-        $status = $dispensedCount < $prescription->renewable_count
-            ? 'to_prepare'
-            : 'closed';
+        try {
+            $dispensedCount = $prescription->dispensed_count + 1;
+            $status = $dispensedCount < $prescription->renewable_count
+                ? 'to_prepare'
+                : 'closed';
 
-        $attr = [
-            'status' => $status,
-            'last_dispensed_at' => Carbon::now(),
-            'dispensed_count' => $dispensedCount
-        ];
+            $attr = [
+                'status' => $status,
+                'last_dispensed_at' => Carbon::now(),
+                'dispensed_count' => $dispensedCount
+            ];
 
-        $prescription->update($attr);
-        return redirect()->route('prescriptions.index')
-            ->with('success', 'Ordonnance délivrée.');
+            $prescription->update($attr);
+            $notifier->send($prescription);
+            return redirect()->route('prescriptions.index')
+                ->with('success', 'Ordonnance délivrée.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
+        }
     }
 }
