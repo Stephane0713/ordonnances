@@ -16,10 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        if (env("APP_ENV") === "prod")
+            return;
+
         User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'test'
+            'email' => 'test@stphdp.com',
+            'password' => 'pass'
         ]);
 
         Prescription::factory(30)->create(['user_id' => 1]);
