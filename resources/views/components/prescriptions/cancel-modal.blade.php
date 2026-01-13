@@ -9,7 +9,7 @@
     </h2>
 
     <p class="mt-1 text-sm text-gray-600">
-      Classer le renouvellement de l'ordonnance de <span
+      Classer le renouvellement en cours de l'ordonnance de <span
         x-text="`${current?.patient_first_name} ${current?.patient_last_name.toUpperCase()}`"></span> comme annulé ?
     </p>
 

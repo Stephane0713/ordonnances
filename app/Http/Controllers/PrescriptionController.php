@@ -127,6 +127,7 @@ class PrescriptionController extends Controller
             $attr = [
                 'status' => $status,
                 'dispensed_count' => $dispensedCount,
+                'last_dispensed_at' => Carbon::now(),
                 'notes' => $prescription->notes . "\n" . "[annulée le " . Carbon::today()->format('d/m/Y') . "]"
             ];
 
