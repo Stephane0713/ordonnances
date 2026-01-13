@@ -12,6 +12,7 @@
   <td class="px-4 py-2 text-sm">{{ strtoupper($prescription->patient_last_name) }}
     {{ $prescription->patient_first_name }}
   </td>
+  <td class="px-4 py-2 text-sm text-center"><x-contact-icon method="{{ $prescription->patient_contact_method }}" value="{{ $prescription->patient_contact_value }}" /></td>
   <td class="px-4 py-2 text-sm">{{ $prescription->getSSN() }}</td>
   <td class="px-4 py-2 text-sm">{{ strtoupper($prescription->doctor_last_name) }}
     {{ $prescription->doctor_first_name }}

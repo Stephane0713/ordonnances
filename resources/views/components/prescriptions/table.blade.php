@@ -5,6 +5,7 @@
     <thead class="bg-blue-100">
       <tr>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Patient</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Contact</th>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">N° Sécurité sociale</th>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Médecin</th>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Prescrit le</th>
