@@ -21,6 +21,7 @@
   <td class="px-4 py-2 text-sm">{{ $prescription->prescribed_at->format('d/m/Y') }}</td>
   <td class="px-4 py-2 text-sm">{{ $prescription->last_dispensed_at?->format('d/m/Y') }}</td>
   <td class="px-4 py-2 text-sm">{{ $prescription->next_dispense_at?->format('d/m/Y') }}</td>
+  <td class="px-4 py-2 text-sm">{{ $prescription->dispensed_count }}/{{ $prescription->renewable_count }}</td>
   <td class="px-4 py-2 text-sm">{{ $prescription->getProgression() }}</td>
   <td class="text-right px-4 py-2 text-sm">
     <x-dropdown align="right" width="w-max">
