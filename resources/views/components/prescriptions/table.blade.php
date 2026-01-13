@@ -29,8 +29,11 @@
                 délivrée</x-dropdown-link>
             @endif
             <x-dropdown-link class="cursor-pointer"
+              x-on:click.prevent="$dispatch('open-cancel-modal', {{ $prescription->id }})">Annuler le
+              renouvellement</x-dropdown-link>
+            <x-dropdown-link class="cursor-pointer"
               x-on:click.prevent="$dispatch('open-update-modal', {{ $prescription->id }})">
-              Corriger les informations
+              Voir/Corriger les informations
             </x-dropdown-link>
             <x-dropdown-link x-on:click.prevent="$dispatch('open-delete-modal', {{ $prescription->id }})"
               class="cursor-pointer text-red-600">

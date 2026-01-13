@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePrescriptionRequest;
 use App\Models\Prescription;
 use App\Services\PrescriptionNotifier;
+use App\Services\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -66,18 +67,24 @@ class PrescriptionController extends Controller
             ->with('success', 'Ordonnance mise à jour.');
     }
 
-    public function destroy(Prescription $prescription)
+    public function destroy(Prescription $prescription, PrescriptionNotifier $notifier)
     {
         $prescription->delete();
+        if ($prescription->hasRenewableLeft()) {
+            $notifier->send($prescription, Subject::Deleted);
+        }
         return redirect()->route('prescriptions.index')
             ->with('success', 'Ordonnance supprimée.');
     }
 
-    public function prepare(Prescription $prescription, PrescriptionNotifier $notifier)
+    public function prepare(Request $request, Prescription $prescription, PrescriptionNotifier $notifier)
     {
         try {
             $prescription->update(['status' => 'to_deliver']);
-            $notifier->send($prescription);
+
+            if ($request->notify === "on") {
+                $notifier->send($prescription, Subject::Prepared);
+            }
 
             return redirect()->route('prescriptions.index')
                 ->with('success', 'Ordonnance préparée.');
@@ -86,7 +93,7 @@ class PrescriptionController extends Controller
         }
     }
 
-    public function deliver(Prescription $prescription, PrescriptionNotifier $notifier)
+    public function deliver(Prescription $prescription)
     {
         try {
             $dispensedCount = $prescription->dispensed_count + 1;
@@ -97,13 +104,36 @@ class PrescriptionController extends Controller
             $attr = [
                 'status' => $status,
                 'last_dispensed_at' => Carbon::now(),
-                'dispensed_count' => $dispensedCount
+                'dispensed_count' => $dispensedCount,
+                'notes' => $prescription->notes . "\n" . "[délivrée le " . Carbon::today()->format('d/m/Y') . "]"
             ];
 
             $prescription->update($attr);
-            $notifier->send($prescription);
             return redirect()->route('prescriptions.index')
                 ->with('success', 'Ordonnance délivrée.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
+        }
+    }
+
+    public function cancel(Prescription $prescription, PrescriptionNotifier $notifier)
+    {
+        try {
+            $dispensedCount = $prescription->dispensed_count + 1;
+            $status = $dispensedCount < $prescription->renewable_count
+                ? 'to_prepare'
+                : 'closed';
+
+            $attr = [
+                'status' => $status,
+                'dispensed_count' => $dispensedCount,
+                'notes' => $prescription->notes . "\n" . "[annulée le " . Carbon::today()->format('d/m/Y') . "]"
+            ];
+
+            $prescription->update($attr);
+            $notifier->send($prescription, Subject::Cancelled);
+            return redirect()->route('prescriptions.index')
+                ->with('success', 'Renouvellement annulé.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
         }

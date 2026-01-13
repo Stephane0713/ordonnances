@@ -53,7 +53,8 @@
         x-on:open-update-modal.window="openModal('save', $event.detail)"
         x-on:open-delete-modal.window="openModal('delete', $event.detail)"
         x-on:open-prepare-modal.window="openModal('prepare', $event.detail)"
-        x-on:open-deliver-modal.window="openModal('deliver', $event.detail)">
+        x-on:open-deliver-modal.window="openModal('deliver', $event.detail)"
+        x-on:open-cancel-modal.window="openModal('cancel', $event.detail)">
 
         <x-primary-button class="inline-block justify-center ml-auto mb-6"
           x-on:click.prevent="$dispatch('open-store-modal')">
@@ -96,6 +97,7 @@
         <x-prescriptions.delete-modal />
         <x-prescriptions.prepare-modal />
         <x-prescriptions.deliver-modal />
+        <x-prescriptions.cancel-modal />
 
       </div>
     </div>

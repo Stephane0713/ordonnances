@@ -5,7 +5,7 @@
       @method('PUT')
     </template>
 
-    <div class="flex flex-col justify-between">
+    <div class="flex flex-col">
       {{-- Section Patient --}}
       <fieldset class="border border-gray-300 rounded-md p-4 mb-4">
         <legend class="text-lg font-semibold">Patient</legend>

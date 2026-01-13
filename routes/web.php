@@ -15,6 +15,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/{prescription}', [PrescriptionController::class, 'destroy'])->name('prescriptions.destroy');
     Route::put('/{prescription}/prepare', [PrescriptionController::class, 'prepare'])->name('prescriptions.prepare');
     Route::put('/{prescription}/deliver', [PrescriptionController::class, 'deliver'])->name('prescriptions.deliver');
+    Route::put('/{prescription}/cancel', [PrescriptionController::class, 'cancel'])->name('prescriptions.cancel');
 });
 
 require __DIR__ . '/auth.php';

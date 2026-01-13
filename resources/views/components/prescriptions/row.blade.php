@@ -12,7 +12,8 @@
   <td class="px-4 py-2 text-sm">{{ strtoupper($prescription->patient_last_name) }}
     {{ $prescription->patient_first_name }}
   </td>
-  <td class="px-4 py-2 text-sm text-center"><x-contact-icon method="{{ $prescription->patient_contact_method }}" value="{{ $prescription->patient_contact_value }}" /></td>
+  <td class="px-4 py-2 text-sm text-center"><x-contact-icon method="{{ $prescription->patient_contact_method }}"
+      value="{{ $prescription->patient_contact_value }}" /></td>
   <td class="px-4 py-2 text-sm">{{ $prescription->getSSN() }}</td>
   <td class="px-4 py-2 text-sm">{{ strtoupper($prescription->doctor_last_name) }}
     {{ $prescription->doctor_first_name }}
@@ -22,7 +23,7 @@
   <td class="px-4 py-2 text-sm">{{ $prescription->next_dispense_at?->format('d/m/Y') }}</td>
   <td class="px-4 py-2 text-sm">{{ $prescription->getProgression() }}</td>
   <td class="text-right px-4 py-2 text-sm">
-    <x-dropdown align="right" width="48">
+    <x-dropdown align="right" width="w-max">
       <x-slot name="trigger">
         <button
           class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
