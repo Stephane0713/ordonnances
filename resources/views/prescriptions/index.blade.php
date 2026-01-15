@@ -48,6 +48,10 @@
           const date = new Date();
           date.setDate(date.getDate() + this.current?.dispense_interval_days || 28);
           return date;
+        },
+        canNotify() {
+          if(this.current?.patient_contact_method !== 'sms') return true;
+          return {{ Auth::user()->can('use-sms') }};
         }
       }" x-on:open-store-modal.window="openModal('save')"
         x-on:open-update-modal.window="openModal('save', $event.detail)"

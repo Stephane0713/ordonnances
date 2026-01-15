@@ -34,12 +34,28 @@
     <template x-if="current?.patient_contact_method !== 'call'">
       <div class="mt-3 space-y-2">
         <div class="flex items-center gap-2">
-          <input id="notify" name="notify" type="checkbox" checked
-            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+          <template x-if="canNotify()">
+            <div>
+              <input id="notify" name="notify" type="checkbox" checked
+                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+              <label for="notify" class="text-sm text-gray-700 cursor-pointer">
+                Je confirme vouloir notifier cette personne
+              </label>
+            </div>
+          </template>
 
-          <label for="notify" class="text-sm text-gray-700 cursor-pointer">
-            Je confirme vouloir notifier cette personne
-          </label>
+          <template x-if="!canNotify()">
+            <div>
+              <div class="text-sm text-red-700 mb-2">
+                Vous n'avez pas assez de crédit pour notifier cette personne !
+              </div>
+              <input id="notify" name="notify" type="checkbox"
+                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+              <label for="notify" class="text-sm text-red-700 cursor-pointer">
+                Je confirme avoir notifié cette personne via une méthode alternative.
+              </label>
+            </div>
+          </template>
         </div>
       </div>
     </template>

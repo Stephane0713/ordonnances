@@ -70,7 +70,7 @@ class PrescriptionController extends Controller
     public function destroy(Prescription $prescription, PrescriptionNotifier $notifier)
     {
         $prescription->delete();
-        if ($prescription->hasRenewableLeft()) {
+        if ($prescription->hasRenewableLeft() && auth()->user()->can('notify')) {
             $notifier->send($prescription, Subject::Deleted);
         }
         return redirect()->route('prescriptions.index')
@@ -82,7 +82,7 @@ class PrescriptionController extends Controller
         try {
             $prescription->update(['status' => 'to_deliver']);
 
-            if ($request->notify === "on") {
+            if ($request->notify === "on" && auth()->user()->can('notify')) {
                 $notifier->send($prescription, Subject::Prepared);
             }
 
@@ -132,7 +132,9 @@ class PrescriptionController extends Controller
             ];
 
             $prescription->update($attr);
-            $notifier->send($prescription, Subject::Cancelled);
+            if (auth()->user()->can('notify')) {
+                $notifier->send($prescription, Subject::Cancelled);
+            }
             return redirect()->route('prescriptions.index')
                 ->with('success', 'Renouvellement annulé.');
         } catch (\Exception $e) {
