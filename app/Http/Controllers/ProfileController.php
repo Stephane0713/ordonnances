@@ -57,4 +57,24 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function updateSms(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        if ($request->input('action') === 'disable') {
+            $user->update(['sms_token' => null]);
+            return Redirect::route('profile.edit')->with('status', 'sms-disabled');
+        }
+
+        $validated = $request->validate([
+            'sms_token' => ['required', 'string', 'max:255'],
+        ]);
+
+        $user->update([
+            'sms_token' => $validated['sms_token'],
+        ]);
+
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
 }
