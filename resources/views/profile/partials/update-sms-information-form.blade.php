@@ -16,7 +16,8 @@
         <div>
             <x-input-label for="sms_token" :value="__('SMS_TOKEN')" />
 
-            <x-text-input id="sms_token" name="sms_token" type="text" class="mt-1 block w-full" :value="old('sms_token', $user->sms_token)" required />
+            <x-text-input id="sms_token" name="sms_token" type="password" class="mt-1 block w-full"
+                :value="old('sms_token', $user->sms_token)" required />
 
             <x-input-error class="mt-2" :messages="$errors->get('sms_token')" />
         </div>
