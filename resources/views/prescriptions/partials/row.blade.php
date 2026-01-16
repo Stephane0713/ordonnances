@@ -39,7 +39,26 @@
       </x-slot>
 
       <x-slot name="content">
-        {{ $actions }}
+        @if ($prescription->status === 'to_prepare')
+          <x-dropdown-link class="cursor-pointer"
+            x-on:click.prevent="$dispatch('open-prepare-modal', {{ $prescription->id }})">Classer
+            préparée</x-dropdown-link>
+        @else
+          <x-dropdown-link class="cursor-pointer"
+            x-on:click.prevent="$dispatch('open-deliver-modal', {{ $prescription->id }})">Classer
+            délivrée</x-dropdown-link>
+        @endif
+        <x-dropdown-link class="cursor-pointer"
+          x-on:click.prevent="$dispatch('open-cancel-modal', {{ $prescription->id }})">Annuler le
+          renouvellement</x-dropdown-link>
+        <x-dropdown-link class="cursor-pointer"
+          x-on:click.prevent="$dispatch('open-update-modal', {{ $prescription->id }})">
+          Voir/Corriger les informations
+        </x-dropdown-link>
+        <x-dropdown-link x-on:click.prevent="$dispatch('open-delete-modal', {{ $prescription->id }})"
+          class="cursor-pointer text-red-600">
+          Supprimer l'ordonnance
+        </x-dropdown-link>
       </x-slot>
     </x-dropdown>
   </td>

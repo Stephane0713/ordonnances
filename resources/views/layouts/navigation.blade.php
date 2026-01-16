@@ -20,8 +20,9 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                @cannot('use-sms')
-                    <a href="{{ route('profile.edit') }}" title="Service SMS désactivé" class="inline-block"><i class="fa-solid fa-comment text-red-500 text-xl animate-pulse"></i></a>
+                @can('show-sms-warning')
+                    <a href="{{ route('profile.edit') }}" title="Service SMS désactivé" class="inline-block"><i
+                            class="fa-solid fa-comment text-red-500 text-xl animate-pulse"></i></a>
                 @endcan
 
                 <x-dropdown align="right" width="48">

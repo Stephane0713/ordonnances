@@ -1,0 +1,25 @@
+@props(['prescriptions'])
+
+<div class="shadow-md sm:rounded mb-32">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-blue-100">
+      <tr>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Patient</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Contact</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">N° Sécurité sociale</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Médecin</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Prescrit le</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Dernier le</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Prévue le</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Nb.</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">État</th>
+        <th class="px-4 py-2"></th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      @foreach($prescriptions as $prescription)
+        @include('prescriptions.partials.row', ['prescription' => $prescription])
+      @endforeach
+    </tbody>
+  </table>
+</div>

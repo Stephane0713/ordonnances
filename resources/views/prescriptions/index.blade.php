@@ -22,38 +22,15 @@
 
   <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-4 rounded-sm">
-      <div class="flex flex-col" x-data="{
-        current: null,
+      <div class="flex flex-col" x-data="prescriptionManager({
         prescriptions: @js($prescriptions),
-        openModal(modal, id = null) { 
-          this.current = id && this.prescriptions.data.find(p => id === p.id);
-          $dispatch('open-modal', modal); 
-        },
-        getSaveRoute() { 
-          return !this.current 
-          ? @js(route('prescriptions.store')) 
-          : @js(route('prescriptions.update', '__ID__')).replace('__ID__', this.current.id);
-        },
         defaultValues: @js(config('defaults')),
-        getInputValue(field) {
-          return this.current && this.current[field] || this.defaultValues[field];
-        },
-        getContactPlaceholder(method) {
-          return method === 'email' ? 'john@doe.com' : '0612345678';
-        },
-        getContactPattern(method) {
-          return method === 'email' ? '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' : '0[1-9][0-9]{8}';
-        },
-        getNextDeliveryDate() {
-          const date = new Date();
-          date.setDate(date.getDate() + this.current?.dispense_interval_days || 28);
-          return date;
-        },
-        canNotify() {
-          if(this.current?.patient_contact_method !== 'sms') return true;
-          return {{ Auth::user()->can('use-sms') }};
+        canUseSms: {{ Auth::user()->can('use-sms') ? 'true' : 'false' }},
+        routes: {
+            store: @js(route('prescriptions.store')),
+            update: @js(route('prescriptions.update', '__ID__'))
         }
-      }" x-on:open-store-modal.window="openModal('save')"
+     })" x-on:open-store-modal.window="openModal('save')"
         x-on:open-update-modal.window="openModal('save', $event.detail)"
         x-on:open-delete-modal.window="openModal('delete', $event.detail)"
         x-on:open-prepare-modal.window="openModal('prepare', $event.detail)"
@@ -92,18 +69,69 @@
         </form>
 
         @if($prescriptions->count() > 0)
-          <x-prescriptions.table :prescriptions="$prescriptions" />
+          @include('prescriptions.partials.table', compact('prescriptions'))
         @else
           <p class="py-12 text-center bg-white text-gray-500 border rounded shadow mt-2">Aucun résultats...</p>
         @endif
 
-        <x-prescriptions.save-modal />
-        <x-prescriptions.delete-modal />
-        <x-prescriptions.prepare-modal />
-        <x-prescriptions.deliver-modal />
-        <x-prescriptions.cancel-modal />
+        @include('prescriptions.partials.save-modal')
+        @include('prescriptions.partials.delete-modal')
+        @include('prescriptions.partials.prepare-modal')
+        @include('prescriptions.partials.deliver-modal')
+        @include('prescriptions.partials.cancel-modal')
 
       </div>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('prescriptionManager', (initialConfig) => ({
+        current: null,
+        prescriptions: initialConfig.prescriptions,
+        defaultValues: initialConfig.defaultValues,
+        canUseSms: initialConfig.canUseSms,
+
+        openModal(modal, id = null) {
+          this.current = id && this.prescriptions.data.find(p => id === p.id);
+          this.$dispatch('open-modal', modal);
+        },
+
+        getSaveRoute() {
+          const storeRoute = initialConfig.routes.store;
+          const updateRoute = initialConfig.routes.update;
+
+          return !this.current
+            ? storeRoute
+            : updateRoute.replace('__ID__', this.current.id);
+        },
+
+        getInputValue(field) {
+          return this.current && this.current[field] || this.defaultValues[field];
+        },
+
+        getContactPlaceholder(method) {
+          return method === 'email' ? 'john@doe.com' : '0612345678';
+        },
+
+        getContactPattern(method) {
+          return method === 'email'
+            ? '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            : '0[1-9][0-9]{8}';
+        },
+
+        getNextDeliveryDate() {
+          const date = new Date();
+          const interval = this.current?.dispense_interval_days || 28;
+          date.setDate(date.getDate() + interval);
+          return date;
+        },
+
+        canNotify() {
+          if (this.current?.patient_contact_method !== 'sms') return true;
+          return this.canUseSms;
+        }
+      }))
+    })
+  </script>
 </x-app-layout>

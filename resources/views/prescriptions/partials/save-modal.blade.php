@@ -42,7 +42,9 @@
               </option>
               <option value="call" :selected="getInputValue('patient_contact_method') === 'call'">Appel
                 téléphonique</option>
-              <option value="sms" :selected="getInputValue('patient_contact_method') === 'sms'">SMS</option>
+              @can('show-sms-option');
+                <option value="sms" :selected="getInputValue('patient_contact_method') === 'sms'">SMS</option>
+              @endcan
             </select>
           </div>
 

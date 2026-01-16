@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@stphdp.com',
-            'password' => 'pass'
+            'password' => 'pass',
+            'sms_token' => 'MySmsToken'
         ]);
 
         Prescription::factory(30)->create(['user_id' => 1]);

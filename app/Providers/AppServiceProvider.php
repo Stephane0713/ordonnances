@@ -27,6 +27,14 @@ class AppServiceProvider extends ServiceProvider
             return $smsManager->getCredits($user) > 0;
         });
 
+        Gate::define('show-sms-option', function (User $user) {
+            return $user->sms_token !== null;
+        });
+
+        Gate::define('show-sms-warning', function (User $user) {
+            return $user->sms_token !== null && $user->cannot('use-sms');
+        });
+
         Gate::define('notify', function (User $user, string $method) {
             if ($method !== 'sms') {
                 return true;
