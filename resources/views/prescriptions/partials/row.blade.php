@@ -43,14 +43,16 @@
           <x-dropdown-link class="cursor-pointer"
             x-on:click.prevent="$dispatch('open-prepare-modal', {{ $prescription->id }})">Classer
             préparée</x-dropdown-link>
-        @else
+        @elseif($prescription->status === 'to_deliver')
           <x-dropdown-link class="cursor-pointer"
             x-on:click.prevent="$dispatch('open-deliver-modal', {{ $prescription->id }})">Classer
             délivrée</x-dropdown-link>
         @endif
-        <x-dropdown-link class="cursor-pointer"
-          x-on:click.prevent="$dispatch('open-cancel-modal', {{ $prescription->id }})">Annuler le
-          renouvellement</x-dropdown-link>
+        @if($prescription->status !== 'closed')
+          <x-dropdown-link class="cursor-pointer"
+            x-on:click.prevent="$dispatch('open-cancel-modal', {{ $prescription->id }})">Annuler le
+            renouvellement</x-dropdown-link>
+        @endif
         <x-dropdown-link class="cursor-pointer"
           x-on:click.prevent="$dispatch('open-update-modal', {{ $prescription->id }})">
           Voir/Corriger les informations
