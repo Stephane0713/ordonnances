@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Prescription extends Model
 {
@@ -83,7 +84,7 @@ class Prescription extends Model
 
     public function isPending(): bool
     {
-        return in_array($this->status, ['to_prepare', 'to_deliver']) && !$this->isLate();
+        return $this->next_dispense_at && now()->gt(Carbon::parse($this->next_dispense_at)->addDays(-7));
     }
 
     public function getProgression(): string
@@ -108,7 +109,7 @@ class Prescription extends Model
             return 'En attente de préparation';
         }
 
-        if ($this->status === 'to_deliver' && $this->isPending()) {
+        if ($this->status === 'to_deliver') {
             return 'En attente de délivrance';
         }
 
