@@ -11,7 +11,7 @@
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Prescrit le</th>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Dernier le</th>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Prévue le</th>
-        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Nb.</th>
+        {{-- <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Nb.</th> --}}
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">État</th>
         <th class="px-4 py-2"></th>
       </tr>

@@ -8,7 +8,7 @@ class SmsManager
 {
     public function getCredits(User $user)
     {
-        return 0;
+        return 1;
     }
 
     public function sendSms(User $user, string $to, string $message)
