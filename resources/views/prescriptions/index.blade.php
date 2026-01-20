@@ -42,30 +42,44 @@
           Ajouter une ordonnance</x-primary-button>
 
         <form action="{{ route('prescriptions.index') }}" class="p-4 flex items-end gap-2 bg-white rounded shadow mb-4">
-          <input type="hidden" name="display" value="all">
           <div class="flex-1">
             <x-input-label class="mb-2" for="patient_search">Patient</x-input-label>
-            <x-text-input type="text" class="w-full" id="patient_search" name="patient_search"
+            <x-text-input type="text" class="w-full text-sm" id="patient_search" name="patient_search"
               placeholder="Nom, Prénom ou N° de sécurité sociale" value="{{ request('patient_search') }}" />
           </div>
           <div class="flex-1">
             <x-input-label class="mb-2" for="doctor_search">Médecin</x-input-label>
-            <x-text-input type="text" class="w-full" id="doctor_search" name="doctor_search" placeholder="Nom ou Prénom"
-              value="{{ request('doctor_search') }}" />
+            <x-text-input type="text" class="w-full text-sm" id="doctor_search" name="doctor_search"
+              placeholder="Nom ou Prénom" value="{{ request('doctor_search') }}" />
           </div>
           <div>
             <x-input-label class="mb-2" for="prescribed_from">Prescrit entre le</x-input-label>
-            <x-text-input type="date" class="w-full" id="prescribed_from" name="prescribed_from"
+            <x-text-input type="date" class="w-full text-sm" id="prescribed_from" name="prescribed_from"
               value="{{ request('prescribed_from') }}" />
           </div>
           <div>
             <x-input-label class="mb-2" for="prescribed_to">et le</x-input-label>
-            <x-text-input type="date" class="w-full" id="prescribed_to" name="prescribed_to"
+            <x-text-input type="date" class="w-full text-sm" id="prescribed_to" name="prescribed_to"
               value="{{ request('prescribed_to') }}" />
           </div>
+          <div>
+            <x-input-label class="mb-2" for="status">États</x-input-label>
+            <select
+              class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm"
+              name="status" id="status">
+              <option class="text-sm" value="all" {{ request('status') === 'all' ? 'selected' : '' }}>
+                Tout afficher</option>
+              <option class="text-sm" value="to_prepare" {{ request('status') === 'to_prepare' ? 'selected' : '' }}>
+                À préparer</option>
+              <option class="text-sm" value="to_deliver" {{ request('status') === 'to_deliver' ? 'selected' : '' }}>
+                À délivrer</option>
+              <option class="text-sm" value="closed" {{ request('status') === 'closed' ? 'selected' : '' }}>
+                Clôturée</option>
+            </select>
+          </div>
           <x-secondary-button class="py-2" x-on:click.prevent="window.location='{{ route('prescriptions.index') }}'">
-            <i class="fa-solid fa-xmark text-base"></i></x-secondary-button>
-          <x-primary-button class="py-2"><i class="fa-solid fa-magnifying-glass text-base"></i></x-primary-button>
+            <i class="fa-solid fa-xmark text-sm"></i></x-secondary-button>
+          <x-primary-button class="py-2"><i class="fa-solid fa-magnifying-glass text-sm"></i></x-primary-button>
         </form>
 
         @if($prescriptions->count() > 0)

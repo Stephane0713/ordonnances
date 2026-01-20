@@ -15,10 +15,6 @@ class PrescriptionController extends Controller
     {
         $query = Prescription::query();
 
-        if ($request->get('display') !== 'all') {
-            $query->where('next_dispense_at', '<=', Carbon::now()->addDays(7));
-        }
-
         $query->when($request->filled('patient_search'), function ($q) use ($request) {
             $q->where(function ($subQuery) use ($request) {
                 $subQuery->where('patient_last_name', 'like', '%' . $request->patient_search . '%')
@@ -42,8 +38,14 @@ class PrescriptionController extends Controller
             $q->whereDate('prescribed_at', '<=', $request->prescribed_to);
         });
 
+        $query->when($request->filled('status')
+            && in_array($request->status, ['to_prepare', 'to_deliver', 'closed']), function ($q) use ($request) {
+                $q->where('status', '=', $request->status);
+            });
+
         $prescriptions = $query
-            ->orderBy('next_dispense_at')
+            ->orderByRaw('next_dispense_at IS NULL ASC')
+            ->orderBy('next_dispense_at', 'asc')
             ->paginate(20)
             ->appends($request->query());
 

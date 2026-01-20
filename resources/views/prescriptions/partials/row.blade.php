@@ -1,11 +1,15 @@
 @props(['prescription'])
 
 @php
-  $styles = $prescription->isLate()
-    ? 'bg-red-50 hover:bg-red-100 text-gray-800'
-    : ($prescription->status === 'closed'
-      ? 'bg-gray-100 text-gray-400'
-      : 'hover:bg-gray-50 text-gray-800');
+  $isLate = $prescription->isLate();
+  $isPending = $prescription->isPending();
+
+  $styles = match (true) {
+    $prescription->status === 'closed' => 'bg-gray-100 text-gray-400',
+    $prescription->status === 'to_prepare' => $isLate ? 'bg-yellow-100' : ($isPending ? 'bg-green-100' : 'bg-white'),
+    $prescription->status === 'to_deliver' => $isLate ? 'bg-red-100' : 'bg-blue-100',
+    default => 'bg-white'
+  };
 @endphp
 
 <tr {{ $attributes->merge(['class' => $styles]) }}>
