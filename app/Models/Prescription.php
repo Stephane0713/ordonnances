@@ -114,8 +114,8 @@ class Prescription extends Model
         }
 
         if ($this->status === 'to_prepare') {
-            $remaining = max($this->renewable_count - $this->dispensed_count, 0);
-            return "$remaining délivrance(s) restante(s)";
+            $daysLeft = Carbon::today()->diffInDays(Carbon::parse($this->next_dispense_at)->startOfDay());
+            return "À préparer dans $daysLeft jours";
         }
 
         return 'Erreur';
