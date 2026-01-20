@@ -1,10 +1,4 @@
 <x-app-layout>
-  <x-slot name="header">
-    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-      {{ __('Dashboard') }}
-    </h2>
-  </x-slot>
-
   @if ($errors->any())
     <div class="bg-red-500 border border-red-700 shadow-md py-2 px-4 rounded">
       <div class="max-w-7xl m-auto">
@@ -20,7 +14,7 @@
     </div>
   @endif
 
-  <div class="py-12">
+  <div class="py-8">
     <div class="max-w-7xl mx-auto sm:px-4 rounded-sm">
       <div class="flex flex-col" x-data="prescriptionManager({
         prescriptions: @js($prescriptions),

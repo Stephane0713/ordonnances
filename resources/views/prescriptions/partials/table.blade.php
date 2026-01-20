@@ -1,8 +1,8 @@
 @props(['prescriptions'])
 
-<div class="shadow-md sm:rounded mb-32">
+<div class="shadow-md sm:rounded mb-32 max-h-[60vh] overflow-y-auto">
   <table class="min-w-full divide-y divide-gray-200">
-    <thead class="bg-blue-100">
+    <thead class="bg-blue-100 sticky top-0 z-50">
       <tr>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Patient</th>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Contact</th>
