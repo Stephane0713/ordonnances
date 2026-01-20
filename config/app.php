@@ -123,4 +123,13 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'margin' => [
+        'pending' => [
+            'to_prepare' => 7,
+        ],
+        'late' => [
+            'to_prepare' => 0,
+            'to_deliver' => 3,
+        ]
+    ],
 ];

@@ -79,12 +79,18 @@ class Prescription extends Model
 
     public function isLate(): bool
     {
-        return $this->next_dispense_at && now()->gt($this->next_dispense_at);
+        $margin = $this->status === "to_deliver"
+            ? config('app.margin.late.to_deliver')
+            : config('app.margin.late.to_prepare');
+
+        return $this->next_dispense_at && now()->gt($this->next_dispense_at->addDays($margin));
     }
 
     public function isPending(): bool
     {
-        return $this->next_dispense_at && now()->gt(Carbon::parse($this->next_dispense_at)->addDays(-7));
+        $margin = config('app.margin.pending.to_prepare');
+
+        return $this->next_dispense_at && now()->gt($this->next_dispense_at->subDays($margin));
     }
 
     public function getProgression(): string
@@ -114,7 +120,9 @@ class Prescription extends Model
         }
 
         if ($this->status === 'to_prepare') {
-            $daysLeft = Carbon::today()->diffInDays(Carbon::parse($this->next_dispense_at)->startOfDay());
+            $daysLeft = Carbon::today()
+                ->addDays(config('app.margin.pending.to_prepare'))
+                ->diffInDays(Carbon::parse($this->next_dispense_at)->startOfDay());
             return "À préparer dans $daysLeft jours";
         }
 
