@@ -18,6 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/{prescription}/deliver', [PrescriptionController::class, 'deliver'])->name('prescriptions.deliver');
     Route::put('/{prescription}/cancel', [PrescriptionController::class, 'cancel'])->name('prescriptions.cancel');
     Route::put('/{prescription}/close', [PrescriptionController::class, 'close'])->name('prescriptions.close');
+    Route::put('/{prescription}/open', [PrescriptionController::class, 'open'])->name('prescriptions.open');
 });
 
 require __DIR__ . '/auth.php';

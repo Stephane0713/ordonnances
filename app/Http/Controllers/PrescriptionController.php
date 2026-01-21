@@ -58,14 +58,14 @@ class PrescriptionController extends Controller
         $prescription->user_id = auth()->id();
         $prescription->save();
 
-        return redirect()->route('prescriptions.index')
+        return back()
             ->with('success', 'Ordonnance créée avec succès.');
     }
 
     public function update(StorePrescriptionRequest $request, Prescription $prescription)
     {
         $prescription->update($request->validated());
-        return redirect()->route('prescriptions.index')
+        return back()
             ->with('success', 'Ordonnance mise à jour.');
     }
 
@@ -75,7 +75,7 @@ class PrescriptionController extends Controller
         if ($prescription->hasRenewableLeft() && auth()->user()->can('notify', $prescription->patient_contact_method)) {
             $notifier->send($prescription, Subject::Deleted);
         }
-        return redirect()->route('prescriptions.index')
+        return back()
             ->with('success', 'Ordonnance supprimée.');
     }
 
@@ -88,7 +88,7 @@ class PrescriptionController extends Controller
                 $notifier->send($prescription, Subject::Prepared);
             }
 
-            return redirect()->route('prescriptions.index')
+            return back()
                 ->with('success', 'Ordonnance préparée.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
@@ -111,7 +111,7 @@ class PrescriptionController extends Controller
             ];
 
             $prescription->update($attr);
-            return redirect()->route('prescriptions.index')
+            return back()
                 ->with('success', 'Ordonnance délivrée.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
@@ -137,7 +137,7 @@ class PrescriptionController extends Controller
             if (auth()->user()->can('notify', $prescription->patient_contact_method)) {
                 $notifier->send($prescription, Subject::Cancelled);
             }
-            return redirect()->route('prescriptions.index')
+            return back()
                 ->with('success', 'Renouvellement annulé.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
@@ -154,8 +154,25 @@ class PrescriptionController extends Controller
 
             $prescription->update($attr);
 
-            return redirect()->route('prescriptions.index')
+            return back()
                 ->with('success', 'Ordonnance clôturée.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
+        }
+    }
+
+    public function open(Prescription $prescription)
+    {
+        try {
+            $attr = [
+                'status' => 'to_prepare',
+                'notes' => $prescription->notes . "\n" . "[ouvert le " . Carbon::today()->format('d/m/Y') . "]"
+            ];
+
+            $prescription->update($attr);
+
+            return back()
+                ->with('success', 'Ordonnance ouverte.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
         }

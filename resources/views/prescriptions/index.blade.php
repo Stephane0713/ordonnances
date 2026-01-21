@@ -30,6 +30,7 @@
         x-on:open-prepare-modal.window="openModal('prepare', $event.detail)"
         x-on:open-deliver-modal.window="openModal('deliver', $event.detail)"
         x-on:open-close-modal.window="openModal('close', $event.detail)"
+        x-on:open-open-modal.window="openModal('open', $event.detail)"
         x-on:open-cancel-modal.window="openModal('cancel', $event.detail)">
 
         <x-primary-button class="inline-block justify-center ml-auto mb-6"
@@ -89,6 +90,7 @@
         @include('prescriptions.partials.deliver-modal')
         @include('prescriptions.partials.cancel-modal')
         @include('prescriptions.partials.close-modal')
+        @include('prescriptions.partials.open-modal')
 
       </div>
     </div>

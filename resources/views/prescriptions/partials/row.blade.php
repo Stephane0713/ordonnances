@@ -66,6 +66,12 @@
             Clôturer l'ordonnance
           </x-dropdown-link>
         @endif
+        @if($prescription->status === 'closed' && !$prescription->isExpired() && $prescription->hasRenewableLeft())
+          <x-dropdown-link class="cursor-pointer"
+            x-on:click.prevent="$dispatch('open-open-modal', {{ $prescription->id }})">
+            Réouvrir l'ordonnance
+          </x-dropdown-link>
+        @endif
         <x-dropdown-link x-on:click.prevent="$dispatch('open-delete-modal', {{ $prescription->id }})"
           class="cursor-pointer text-red-600">
           Supprimer l'ordonnance
