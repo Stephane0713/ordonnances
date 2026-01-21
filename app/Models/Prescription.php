@@ -36,22 +36,24 @@ class Prescription extends Model
         'notes',
     ];
 
+    public static function getNextDispenseAt(self $model)
+    {
+        if ($model->status === 'closed') {
+            return null;
+        }
+
+        $baseDate = $model->last_dispensed_at ?? $model->prescribed_at;
+        return $baseDate->copy()->addDays($model->dispense_interval_days);
+    }
+
     protected static function booted()
     {
         static::saving(function (self $model) {
             if ($model->isExpired() || !$model->hasRenewableLeft()) {
-                $model->next_dispense_at = null;
                 $model->status = 'closed';
-                return;
             }
 
-            if ($model->status === 'closed') {
-                $model->next_dispense_at = null;
-                return;
-            }
-
-            $baseDate = $model->last_dispensed_at ?? $model->prescribed_at;
-            $model->next_dispense_at = $baseDate->copy()->addDays($model->dispense_interval_days);
+            $model->next_dispense_at = self::getNextDispenseAt($model);
         });
     }
 
@@ -85,15 +87,15 @@ class Prescription extends Model
     public function isLate(): bool
     {
         $margin = $this->status === "to_deliver"
-            ? config('app.margin.late.to_deliver')
-            : config('app.margin.late.to_prepare');
+            ? config('const.margin.to_deliver.late')
+            : config('const.margin.to_prepare.late');
 
         return $this->next_dispense_at && now()->gt($this->next_dispense_at->addDays($margin));
     }
 
     public function isPending(): bool
     {
-        $margin = config('app.margin.pending.to_prepare');
+        $margin = config('const.margin.to_prepare.pending');
 
         return $this->next_dispense_at && now()->gt($this->next_dispense_at->subDays($margin));
     }
@@ -126,7 +128,7 @@ class Prescription extends Model
 
         if ($this->status === 'to_prepare') {
             $daysLeft = Carbon::today()
-                ->addDays(config('app.margin.pending.to_prepare'))
+                ->addDays(config('const.margin.to_prepare.pending'))
                 ->diffInDays(Carbon::parse($this->next_dispense_at)->startOfDay());
             return "À préparer dans $daysLeft jours";
         }

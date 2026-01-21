@@ -149,6 +149,7 @@ class PrescriptionController extends Controller
         try {
             $attr = [
                 'status' => 'closed',
+                'notes' => $prescription->notes . "\n" . "[clôturée le " . Carbon::today()->format('d/m/Y') . "]"
             ];
 
             $prescription->update($attr);
