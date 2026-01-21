@@ -143,38 +143,4 @@ class PrescriptionController extends Controller
             return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
         }
     }
-
-    public function close(Prescription $prescription)
-    {
-        try {
-            $attr = [
-                'status' => 'closed',
-                'notes' => $prescription->notes . "\n" . "[clôturée le " . Carbon::today()->format('d/m/Y') . "]"
-            ];
-
-            $prescription->update($attr);
-
-            return back()
-                ->with('success', 'Ordonnance clôturée.');
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
-        }
-    }
-
-    public function open(Prescription $prescription)
-    {
-        try {
-            $attr = [
-                'status' => 'to_prepare',
-                'notes' => $prescription->notes . "\n" . "[ouvert le " . Carbon::today()->format('d/m/Y') . "]"
-            ];
-
-            $prescription->update($attr);
-
-            return back()
-                ->with('success', 'Ordonnance ouverte.');
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
-        }
-    }
 }

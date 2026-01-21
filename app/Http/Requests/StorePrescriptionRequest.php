@@ -50,6 +50,7 @@ class StorePrescriptionRequest extends FormRequest
             'dispensed_count' => 'nullable|integer|min:0',
             'last_dispensed_at' => 'nullable|date|before_or_equal:today',
             'dispense_interval_days' => 'required|integer|min:1',
+            'status' => 'required|in:to_prepare,to_deliver,closed',
             'notes' => 'nullable|string',
         ];
     }
