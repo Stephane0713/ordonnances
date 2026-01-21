@@ -143,4 +143,20 @@ class PrescriptionController extends Controller
             return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
         }
     }
+
+    public function close(Prescription $prescription)
+    {
+        try {
+            $attr = [
+                'status' => 'closed',
+            ];
+
+            $prescription->update($attr);
+
+            return redirect()->route('prescriptions.index')
+                ->with('success', 'Ordonnance clôturée.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => "Une erreur est survenue lors de la mise à jour du statut."]);
+        }
+    }
 }

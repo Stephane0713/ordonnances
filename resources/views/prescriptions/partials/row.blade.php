@@ -53,15 +53,19 @@
             x-on:click.prevent="$dispatch('open-deliver-modal', {{ $prescription->id }})">Classer
             délivrée</x-dropdown-link>
         @endif
-        @if($prescription->status !== 'closed')
-          <x-dropdown-link class="cursor-pointer"
-            x-on:click.prevent="$dispatch('open-cancel-modal', {{ $prescription->id }})">Annuler le
-            renouvellement</x-dropdown-link>
-        @endif
         <x-dropdown-link class="cursor-pointer"
           x-on:click.prevent="$dispatch('open-update-modal', {{ $prescription->id }})">
           Voir/Corriger les informations
         </x-dropdown-link>
+        @if($prescription->status !== 'closed')
+          <x-dropdown-link class="cursor-pointer"
+            x-on:click.prevent="$dispatch('open-cancel-modal', {{ $prescription->id }})">Annuler le
+            renouvellement</x-dropdown-link>
+          <x-dropdown-link class="cursor-pointer"
+            x-on:click.prevent="$dispatch('open-close-modal', {{ $prescription->id }})">
+            Clôturer l'ordonnance
+          </x-dropdown-link>
+        @endif
         <x-dropdown-link x-on:click.prevent="$dispatch('open-delete-modal', {{ $prescription->id }})"
           class="cursor-pointer text-red-600">
           Supprimer l'ordonnance

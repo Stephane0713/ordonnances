@@ -45,6 +45,11 @@ class Prescription extends Model
                 return;
             }
 
+            if ($model->status === 'closed') {
+                $model->next_dispense_at = null;
+                return;
+            }
+
             $baseDate = $model->last_dispensed_at ?? $model->prescribed_at;
             $model->next_dispense_at = $baseDate->copy()->addDays($model->dispense_interval_days);
         });
