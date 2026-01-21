@@ -1,6 +1,6 @@
 @props(['prescriptions'])
 
-<div class="shadow-md sm:rounded max-h-[60vh] overflow-y-auto">
+<div class="shadow-md sm:rounded max-h-[60vh] overflow-y-auto bg-white">
   <table class="min-w-full divide-y divide-gray-200 mb-64">
     <thead class="bg-blue-100 sticky top-0 z-50">
       <tr>
