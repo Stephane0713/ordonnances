@@ -99,6 +99,13 @@
         prescriptions: initialConfig.prescriptions,
         defaultValues: initialConfig.defaultValues,
         canUseSms: initialConfig.canUseSms,
+        last_dispensed_at: null,
+        next_dispensed_at: '',
+
+        init() {
+          this.$watch('last_dispensed_at',
+            (value, old) => this.next_dispensed_at = this.getNextDeliveryDate(last_dispensed_at.value).toLocaleDateString('fr-FR'));
+        },
 
         openModal(modal, id = null) {
           this.current = id && this.prescriptions.data.find(p => id === p.id);
@@ -115,7 +122,6 @@
         },
 
         getInputValue(field) {
-          console.log(this.current && this.current[field])
           return this.current && this.current[field] || this.defaultValues[field];
         },
 
@@ -125,12 +131,12 @@
 
         getContactPattern(method) {
           return method === 'email'
-            ? '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            ? '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
             : '0[1-9][0-9]{8}';
         },
 
-        getNextDeliveryDate() {
-          const date = new Date();
+        getNextDeliveryDate(from = null) {
+          const date = from ? new Date(from) : new Date();
           const interval = this.current?.dispense_interval_days || 28;
           date.setDate(date.getDate() + interval);
           return date;
