@@ -42,7 +42,7 @@
             <x-input-label class="mb-2" for="dispense_interval_days">Intervalle entre délivrances
               (jours)</x-input-label>
             <x-text-input required type="number" min="1" class="w-full text-sm" id="dispense_interval_days"
-              x-model="dispense_interval_days" name="dispense_interval_days" placeholder="30"
+              x-model="dispense_interval_days" name="dispense_interval_days" placeholder="28"
               ::value="getInputValue('dispense_interval_days')" />
           </div>
 

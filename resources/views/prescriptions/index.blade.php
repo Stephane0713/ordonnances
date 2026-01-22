@@ -113,16 +113,14 @@
 
         openModal(modal, id = null) {
           this.current = id && this.prescriptions.data.find(p => id === p.id);
+          this.dispense_interval_days = this.getInputValue('dispense_interval_days');
+          this.last_dispensed_at = this.getInputValue('last_dispensed_at')?.split('T')[0];
           this.next_dispensed_at = this.getNextDeliveryDate(last_dispensed_at.value).toLocaleDateString('fr-FR');
           this.$dispatch('open-modal', modal);
         },
 
         closeSelf() {
           this.$dispatch('close-modal', 'save');
-          this.current = null;
-          this.dispense_interval_days = null;
-          this.last_dispensed_at = null;
-          this.next_dispensed_at = null;
         },
 
         getSaveRoute() {
@@ -152,7 +150,6 @@
           const date = from ? new Date(from) : new Date();
 
           const interval = Number(this.dispense_interval_days) || Number(this.current?.dispense_interval_days) || 28;
-          console.log(interval);
           date.setDate(date.getDate() + interval);
           return date;
         },
