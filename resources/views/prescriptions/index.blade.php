@@ -113,6 +113,7 @@
 
         openModal(modal, id = null) {
           this.current = id && this.prescriptions.data.find(p => id === p.id);
+          this.next_dispensed_at = this.getNextDeliveryDate(last_dispensed_at.value).toLocaleDateString('fr-FR');
           this.$dispatch('open-modal', modal);
         },
 
