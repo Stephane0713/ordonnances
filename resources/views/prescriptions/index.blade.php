@@ -99,17 +99,29 @@
         prescriptions: initialConfig.prescriptions,
         defaultValues: initialConfig.defaultValues,
         canUseSms: initialConfig.canUseSms,
+        dispense_interval_days: null,
         last_dispensed_at: null,
-        next_dispensed_at: '',
+        next_dispensed_at: null,
 
         init() {
           this.$watch('last_dispensed_at',
+            (value, old) => this.next_dispensed_at = this.getNextDeliveryDate(last_dispensed_at.value).toLocaleDateString('fr-FR'));
+
+          this.$watch('dispense_interval_days',
             (value, old) => this.next_dispensed_at = this.getNextDeliveryDate(last_dispensed_at.value).toLocaleDateString('fr-FR'));
         },
 
         openModal(modal, id = null) {
           this.current = id && this.prescriptions.data.find(p => id === p.id);
           this.$dispatch('open-modal', modal);
+        },
+
+        closeSelf() {
+          this.$dispatch('close-modal', 'save');
+          this.current = null;
+          this.dispense_interval_days = null;
+          this.last_dispensed_at = null;
+          this.next_dispensed_at = null;
         },
 
         getSaveRoute() {
@@ -137,7 +149,9 @@
 
         getNextDeliveryDate(from = null) {
           const date = from ? new Date(from) : new Date();
-          const interval = this.current?.dispense_interval_days || 28;
+
+          const interval = Number(this.dispense_interval_days) || Number(this.current?.dispense_interval_days) || 28;
+          console.log(interval);
           date.setDate(date.getDate() + interval);
           return date;
         },

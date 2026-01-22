@@ -42,7 +42,8 @@
             <x-input-label class="mb-2" for="dispense_interval_days">Intervalle entre délivrances
               (jours)</x-input-label>
             <x-text-input required type="number" min="1" class="w-full text-sm" id="dispense_interval_days"
-              name="dispense_interval_days" placeholder="30" ::value="getInputValue('dispense_interval_days')" />
+              x-model="dispense_interval_days" name="dispense_interval_days" placeholder="30"
+              ::value="getInputValue('dispense_interval_days')" />
           </div>
 
           <div>
@@ -160,7 +161,7 @@
       {{-- Controls --}}
       <div class="ml-auto mt-auto col-start-2">
         <x-secondary-button class="inline-block justify-center mr-2"
-          x-on:click.prevent="$dispatch('close-modal', 'save')">Annuler</x-secondary-button>
+          x-on:click.prevent="closeSelf()">Annuler</x-secondary-button>
         <x-primary-button class="inline-block justify-center">Enregistrer</x-primary-button>
       </div>
     </div>
