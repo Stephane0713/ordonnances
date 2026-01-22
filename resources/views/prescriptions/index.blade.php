@@ -143,7 +143,7 @@
 
         getContactPattern(method) {
           return method === 'email'
-            ? '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            ? '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' // TODO : fix and implement back
             : '0[1-9][0-9]{8}';
         },
 
