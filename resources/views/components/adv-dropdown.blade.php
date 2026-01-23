@@ -17,8 +17,8 @@
         x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95" {{-- Fixed positioning logic --}}
-        class="fixed z-50 {{ $width }} rounded-md shadow-lg" :style="`left: ${pos.x}px; top: ${pos.y}px;`"
-        @click="open = false">
+        class="fixed z-50 {{ $width }} rounded-md shadow-lg" style="display: none;"
+        :style="`left: ${pos.x}px; top: ${pos.y}px;`" @click="open = false">
         <div class="rounded-md ring-1 ring-black ring-opacity-5 {{ $contentClasses }}">
             {{ $content }}
         </div>
@@ -40,8 +40,8 @@
                 this.$nextTick(() => {
                     const { offsetWidth: width, offsetHeight: height } = this.$refs.menu;
 
-                    this.pos.x = e.target.getBoundingClientRect().x - width + 32;
-                    this.pos.y = Math.min(e.target.getBoundingClientRect().y + 32, window.innerHeight - height - 16);
+                    this.pos.x = e.target.getBoundingClientRect().x - width + 42;
+                    this.pos.y = Math.min(e.target.getBoundingClientRect().y + 36, window.innerHeight - height - 16);
                 });
             }
         }));
