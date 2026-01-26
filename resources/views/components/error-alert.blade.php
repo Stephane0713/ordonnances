@@ -10,7 +10,9 @@
         <strong class="text-white">
           {{ __('Des erreurs sont survenues :') }}
         </strong>
-        <button class="text-white" @click="open = false">x</button>
+        <button class="text-white hover:text-red-200 transition-colors" @click="open = false">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
       <ul class="mt-2 text-white">
         @foreach ($errors->all() as $message)
