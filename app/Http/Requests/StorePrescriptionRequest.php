@@ -54,4 +54,45 @@ class StorePrescriptionRequest extends FormRequest
             'notes' => 'nullable|string',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            // Prénom & Nom Patient
+            'patient_first_name.required' => 'Le prénom du patient est obligatoire.',
+            'patient_last_name.required' => 'Le nom du patient est obligatoire.',
+
+            // SSN (Numéro de sécurité sociale)
+            'patient_ssn.required' => 'Le numéro de sécurité sociale est requis.',
+            'patient_ssn.numeric' => 'Le SSN doit contenir uniquement des chiffres.',
+            'patient_ssn.digits_between' => 'Le SSN doit comporter entre :min et :max chiffres.',
+
+            // Méthode de contact
+            'patient_contact_method.required' => 'Veuillez choisir un mode de contact.',
+            'patient_contact_method.in' => 'Le mode de contact sélectionné est invalide.',
+            'patient_contact_value.required' => 'Le champ contact est obligatoire.',
+
+            // Médecin
+            'doctor_first_name.required' => 'Le prénom du médecin est obligatoire.',
+            'doctor_last_name.required' => 'Le nom du médecin est obligatoire.',
+
+            // Dates et durée
+            'prescribed_at.required' => 'La date de prescription est obligatoire.',
+            'prescribed_at.date' => 'La date de prescription n\'est pas valide.',
+            'validity_duration_in_months.integer' => 'La durée de validité doit être un nombre entier.',
+            'validity_duration_in_months.min' => 'La durée doit être d\'au moins :min mois.',
+
+            // Renouvellement et délivrance
+            'renewable_count.required' => 'Le nombre de renouvellements est requis.',
+            'renewable_count.integer' => 'Le nombre de renouvellements doit être un nombre entier.',
+            'dispense_interval_days.required' => 'L\'intervalle entre les délivrances est requis.',
+            'dispense_interval_days.min' => 'L\'intervalle doit être d\'au moins :min jour.',
+
+            'last_dispensed_at.before_or_equal' => 'La date de dernière délivrance ne peut pas être dans le futur.',
+
+            // Statut
+            'status.required' => 'Le statut est obligatoire.',
+            'status.in' => 'Le statut sélectionné est invalide.',
+        ];
+    }
 }

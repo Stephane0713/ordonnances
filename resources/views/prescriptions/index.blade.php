@@ -1,18 +1,6 @@
 <x-app-layout>
-  @if ($errors->any())
-    <div class="bg-red-500 border border-red-700 shadow-md py-2 px-4 rounded">
-      <div class="max-w-7xl m-auto">
-        <strong class="text-white">
-          {{ __('Des erreurs sont survenues :') }}
-        </strong>
-        <ul class="mt-2 text-white">
-          @foreach ($errors->all() as $message)
-            <li>{{ $message }}</li>
-          @endforeach
-        </ul>
-      </div>
-    </div>
-  @endif
+
+  <x-error-alert :errors="$errors" />
 
   <div class="py-8">
     <div class="max-w-7xl mx-auto sm:px-4 rounded-sm">
