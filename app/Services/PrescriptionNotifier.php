@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Mail\CancelMail;
 use App\Mail\DeleteMail;
+use App\Mail\LateForPickUpMail;
 use App\Mail\PrepareMail;
 use App\Models\Prescription;
 use Illuminate\Support\Facades\Mail;
@@ -13,6 +14,7 @@ enum Subject: string
     case Prepared = 'prepared';
     case Cancelled = 'cancelled';
     case Deleted = 'deleted';
+    case LateForPickUp = 'late_for_pick_up';
 }
 
 class PrescriptionNotifier
@@ -25,6 +27,7 @@ class PrescriptionNotifier
             Subject::Prepared => $this->notifyPrepared($prescription, $method),
             Subject::Cancelled => $this->notifyCancelled($prescription, $method),
             Subject::Deleted => $this->notifyDeleted($prescription, $method),
+            Subject::LateForPickUp => $this->notifyLateForPickUp($prescription, $method),
             default => throw new \InvalidArgumentException("Unknown subject"),
         };
     }
@@ -52,6 +55,15 @@ class PrescriptionNotifier
         match ($method) {
             'email' => Mail::to($prescription->patient_contact_value)->send(new DeleteMail($prescription)),
             'sms' => $this->sendSms($prescription, "Your prescription was deleted."),
+            default => null,
+        };
+    }
+
+    private function notifyLateForPickUp($prescription, $method)
+    {
+        match ($method) {
+            'email' => Mail::to($prescription->patient_contact_value)->send(new LateForPickUpMail($prescription)),
+            'sms' => $this->sendSms($prescription, "Your prescription is late for pick up."),
             default => null,
         };
     }
