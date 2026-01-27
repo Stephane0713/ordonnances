@@ -7,7 +7,7 @@
       <div class="flex flex-col" x-data="prescriptionManager({
         prescriptions: @js($prescriptions),
         defaultValues: @js(config('defaults')),
-        canUseSms: {{ Auth::user()->can('use-sms') ? 'true' : 'false' }},
+        canUseSms: {{ Auth::user()->can('use-sms') }},
         routes: {
             store: @js(route('prescriptions.store')),
             update: @js(route('prescriptions.update', '__ID__'))
