@@ -45,7 +45,7 @@
               value="{{ request('prescribed_to') }}" />
           </div>
           <div>
-            <x-input-label class="mb-2" for="status">États</x-input-label>
+            <x-input-label class="mb-2" for="status">Statut</x-input-label>
             <select
               class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm"
               name="status" id="status">

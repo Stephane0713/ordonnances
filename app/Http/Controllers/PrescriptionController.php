@@ -13,6 +13,13 @@ class PrescriptionController extends Controller
 {
     public function index(Request $request)
     {
+        if (!request()->has('orderBy')) {
+            request()->merge([
+                'orderBy' => 'next_dispense_at',
+                'desc' => 0
+            ]);
+        }
+
         $query = Prescription::query();
 
         $query->when($request->filled('patient_search'), function ($q) use ($request) {
@@ -45,7 +52,7 @@ class PrescriptionController extends Controller
 
         $prescriptions = $query
             ->orderByRaw('next_dispense_at IS NULL ASC')
-            ->orderBy('next_dispense_at', 'asc')
+            ->orderBy(request('orderBy'), request('desc') ? 'desc' : 'asc')
             ->paginate(20)
             ->appends($request->query());
 
