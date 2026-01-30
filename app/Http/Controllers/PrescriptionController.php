@@ -55,6 +55,12 @@ class PrescriptionController extends Controller
                 $q->where('status', '=', $request->status);
             });
 
+        $query->when($request->filled('status') && $request->status === 'waiting_for_consent', function ($q) {
+            $q->whereHas('patient', function ($subQuery) {
+                $subQuery->whereNull('consent_file');
+            });
+        });
+
         $prescriptions = $query
             ->orderByRaw('next_dispense_at IS NULL ASC')
             ->orderBy(request('orderBy'), request('desc') ? 'desc' : 'asc')

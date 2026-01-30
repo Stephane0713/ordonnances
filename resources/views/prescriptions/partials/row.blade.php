@@ -5,8 +5,8 @@
   $isPending = $prescription->isPending();
 
   $styles = match (true) {
+    !$prescription->patient->consent_file => 'bg-gray-200 hover:bg-gray-300',
     $prescription->status === 'closed' => 'bg-gray-100 hover:bg-gray-200 text-gray-400',
-    $prescription->status === 'waiting_for_consent' => 'bg-gray-200 hover:bg-gray-300',
     $prescription->status === 'to_prepare' => $isLate ? 'bg-yellow-100 hover:bg-yellow-200'
     : ($isPending ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-blue-50'),
     $prescription->status === 'to_deliver' => $isLate ? 'bg-red-100 hover:bg-red-200' : 'bg-blue-100 hover:bg-blue-200',

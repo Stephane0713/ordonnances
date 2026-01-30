@@ -38,7 +38,7 @@ class Prescription extends Model
 
     public static function getNextDispenseAt(self $model)
     {
-        if ($model->status === 'closed') {
+        if ($model->status === 'closed' || !$model->patient->consent_file) {
             return null;
         }
 
@@ -90,12 +90,12 @@ class Prescription extends Model
 
     public function getProgression(): string
     {
-        if ($this->status === 'closed') {
-            return 'Clôturé';
-        }
-
         if (!$this->patient->consent_file) {
             return 'En attente de consentement';
+        }
+
+        if ($this->status === 'closed') {
+            return 'Clôturé';
         }
 
         if ($this->isExpired()) {
