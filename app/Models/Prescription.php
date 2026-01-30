@@ -38,7 +38,7 @@ class Prescription extends Model
 
     public static function getNextDispenseAt(self $model)
     {
-        if ($model->status === 'closed' || !$model->patient->consent_file) {
+        if ($model->status === 'closed' || $model->status === 'waiting_for_consent') {
             return null;
         }
 

@@ -25,7 +25,7 @@ class PatientFactory extends Factory
                 'email' => $this->faker->safeEmail(),
                 'call', 'sms' => '0' . $this->faker->numerify('6########'),
             },
-            'consent_file' => $this->faker->optional()->url(),
+            'consent_file' => $this->faker->optional(0.9)->url(),
         ];
     }
 }
