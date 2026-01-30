@@ -9,7 +9,7 @@ return [
 */
 
   'margin' => [
-    'to_prepre' => [
+    'to_prepare' => [
       'pending' => 7,
       'late' => 0
     ],
@@ -17,4 +17,8 @@ return [
       'late' => 3,
     ]
   ],
+
+  'default' => [
+    'direction' => 0
+  ]
 ];

@@ -16,7 +16,7 @@ class PrescriptionController extends Controller
         if (!request()->has('orderBy')) {
             request()->merge([
                 'orderBy' => 'next_dispense_at',
-                'desc' => 0
+                'desc' => config('const.default.direction')
             ]);
         }
 
