@@ -102,7 +102,7 @@
           </div>
 
           <div>
-            <x-input-label class="mb-2" for="patient_ssn">N° sécurité sociale (8 derniers
+            <x-input-label class="mb-2" for="patient_ssn">N° sécurité sociale (8 premiers
               chiffres)</x-input-label>
             <x-text-input required type="text" class="w-full text-sm" id="patient_ssn" name="patient_ssn"
               pattern="\d{8,13}" placeholder="12345678" ::value="getInputValue('patient_ssn')" />

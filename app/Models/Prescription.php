@@ -60,13 +60,13 @@ class Prescription extends Model
     public function setPatientSsnAttribute($value)
     {
         $digits = preg_replace('/\D/', '', $value);
-        $this->attributes['patient_ssn'] = substr($digits, -8);
+        $this->attributes['patient_ssn'] = substr($digits, 0, 8);
     }
 
     public function getSSN()
     {
         $ssn = (string) $this->patient_ssn;
-        return str_pad($ssn, 13, '*', STR_PAD_LEFT);
+        return str_pad($ssn, 13, '*', STR_PAD_RIGHT);
     }
 
     public function hasRenewableLeft(): bool
