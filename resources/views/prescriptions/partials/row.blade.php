@@ -6,6 +6,7 @@
 
   $styles = match (true) {
     $prescription->status === 'closed' => 'bg-gray-100 hover:bg-gray-200 text-gray-400',
+    $prescription->status === 'waiting_for_consent' => 'bg-gray-200 hover:bg-gray-300',
     $prescription->status === 'to_prepare' => $isLate ? 'bg-yellow-100 hover:bg-yellow-200'
     : ($isPending ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-blue-50'),
     $prescription->status === 'to_deliver' => $isLate ? 'bg-red-100 hover:bg-red-200' : 'bg-blue-100 hover:bg-blue-200',
@@ -53,10 +54,15 @@
             x-on:click.prevent="$dispatch('open-deliver-modal', {{ $prescription->id }})">Classer
             délivrée</x-dropdown-link>
         @endif
-        @if($prescription->status !== 'closed')
+        @if(in_array($prescription->status, ['to_prepare', 'to_deliver']))
           <x-dropdown-link class="cursor-pointer"
             x-on:click.prevent="$dispatch('open-cancel-modal', {{ $prescription->id }})">Annuler le
             renouvellement</x-dropdown-link>
+        @endif
+        @if($prescription->status === 'waiting_for_consent')
+          <x-dropdown-link class="cursor-pointer"
+            x-on:click.prevent="$dispatch('open-cancel-modal', {{ $prescription->id }})">Télécharger le fichier de
+            consentement</x-dropdown-link>
         @endif
         <x-dropdown-link class="cursor-pointer"
           x-on:click.prevent="$dispatch('open-update-modal', {{ $prescription->id }})">

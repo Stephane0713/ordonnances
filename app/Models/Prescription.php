@@ -106,6 +106,10 @@ class Prescription extends Model
             return 'Clôturé';
         }
 
+        if ($this->status === 'waiting_for_consent') {
+            return 'En attente de consentement';
+        }
+
         if ($this->isExpired()) {
             return 'Expiré';
         }

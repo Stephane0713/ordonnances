@@ -55,6 +55,8 @@
                 À préparer</option>
               <option class="text-sm" value="to_deliver" {{ request('status') === 'to_deliver' ? 'selected' : '' }}>
                 À délivrer</option>
+              <option class="text-sm" value="waiting_for_consent" {{ request('status') === 'waiting_for_consent' ? 'selected' : '' }}>
+                En attente de consentement</option>
               <option class="text-sm" value="closed" {{ request('status') === 'closed' ? 'selected' : '' }}>
                 Clôturée</option>
             </select>

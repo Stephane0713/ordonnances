@@ -46,7 +46,7 @@ class PrescriptionController extends Controller
         });
 
         $query->when($request->filled('status')
-            && in_array($request->status, ['to_prepare', 'to_deliver', 'closed']), function ($q) use ($request) {
+            && in_array($request->status, ['to_prepare', 'to_deliver', 'closed', 'waiting_for_consent']), function ($q) use ($request) {
                 $q->where('status', '=', $request->status);
             });
 

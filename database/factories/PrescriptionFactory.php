@@ -39,7 +39,7 @@ class PrescriptionFactory extends Factory
             'last_dispensed_at' => $lastDispensed,
             'dispense_interval_days' => $dispenseInterval,
             'notes' => $this->faker->sentence,
-            'status' => $this->faker->randomElement(['to_prepare', 'to_deliver']),
+            'status' => $this->faker->randomElement(['to_prepare', 'to_deliver', 'closed', 'waiting_for_consent']),
         ];
     }
 }

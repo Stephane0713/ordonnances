@@ -35,7 +35,7 @@ return new class extends Migration {
             $table->date('next_dispense_at')->nullable();
 
             // --- Status & notes ---
-            $table->enum('status', ['to_prepare', 'to_deliver', 'closed'])->default('to_prepare');
+            $table->enum('status', ['to_prepare', 'to_deliver', 'waiting_for_consent', 'closed'])->default('to_prepare');
             $table->text('notes')->nullable();
 
             $table->timestamps();
