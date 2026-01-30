@@ -85,14 +85,8 @@
 
     <div class="flex flex-col">
       {{-- Section Patient --}}
-      <fieldset class="relative border border-gray-300 rounded-md p-4 mb-4">
+      <fieldset class="border border-gray-300 rounded-md p-4 mb-4">
         <legend class="text-lg font-semibold">Patient</legend>
-
-        <button type="button"
-          class="px-2 py-1 rounded-md text-gray-600 hover:bg-gray-100 border border-gray-300 absolute top-0 right-4"
-          aria-label="Patient">
-          <i class="fa fa-user text-sm" aria-hidden="true"></i>
-        </button>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
           <div>
