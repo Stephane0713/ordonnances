@@ -19,11 +19,6 @@ class Prescription extends Model
     ];
 
     protected $fillable = [
-        'patient_first_name',
-        'patient_last_name',
-        'patient_ssn',
-        'patient_contact_method',
-        'patient_contact_value',
         'doctor_first_name',
         'doctor_last_name',
         'prescribed_at',
@@ -35,6 +30,11 @@ class Prescription extends Model
         'status',
         'notes',
     ];
+
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class);
+    }
 
     public static function getNextDispenseAt(self $model)
     {
@@ -55,18 +55,6 @@ class Prescription extends Model
 
             $model->next_dispense_at = self::getNextDispenseAt($model);
         });
-    }
-
-    public function setPatientSsnAttribute($value)
-    {
-        $digits = preg_replace('/\D/', '', $value);
-        $this->attributes['patient_ssn'] = substr($digits, 0, 8);
-    }
-
-    public function getSSN()
-    {
-        $ssn = (string) $this->patient_ssn;
-        return str_pad($ssn, 13, '*', STR_PAD_RIGHT);
     }
 
     public function hasRenewableLeft(): bool
@@ -106,7 +94,7 @@ class Prescription extends Model
             return 'Clôturé';
         }
 
-        if ($this->status === 'waiting_for_consent') {
+        if (!$this->patient->consent_file) {
             return 'En attente de consentement';
         }
 

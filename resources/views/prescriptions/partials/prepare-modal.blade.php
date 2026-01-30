@@ -2,7 +2,7 @@
   <form x-data="{
     hasConfirmedCall: false,
     canConfirm() {
-      return this.current?.patient_contact_method !== 'call' || this.hasConfirmedCall;
+      return this.current?.patient.contact_method !== 'call' || this.hasConfirmedCall;
     }
   }" class="p-6" class="px-6 py-4 grid grid-cols-2 gap-4 content-between"
     :action="current && @js(route('prescriptions.prepare', '__ID__')).replace('__ID__', current.id)" method="POST">
@@ -15,10 +15,10 @@
 
     <p class="mt-1 text-sm text-gray-600">
       Classer l'ordonnance de <span
-        x-text="`${current?.patient_first_name} ${current?.patient_last_name.toUpperCase()}`"></span> comme préparée ?
+        x-text="`${current?.patient.first_name} ${current?.patient.last_name.toUpperCase()}`"></span> comme préparée ?
     </p>
 
-    <template x-if="current?.patient_contact_method === 'call'">
+    <template x-if="current?.patient.contact_method === 'call'">
       <div class="mt-3 space-y-2">
         <div class="flex items-center gap-2">
           <input id="confirm_contacted" type="checkbox" x-model="hasConfirmedCall"
@@ -31,7 +31,7 @@
       </div>
     </template>
 
-    <template x-if="current?.patient_contact_method !== 'call'">
+    <template x-if="current?.patient.contact_method !== 'call'">
       <div class="mt-3 space-y-2">
         <div class="flex items-center gap-2">
           <template x-if="canNotify()">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePrescriptionRequest;
+use App\Models\Patient;
 use App\Models\Prescription;
 use App\Services\PrescriptionNotifier;
 use App\Services\Subject;
@@ -20,13 +21,17 @@ class PrescriptionController extends Controller
             ]);
         }
 
-        $query = Prescription::query();
+        $query = Prescription::query()->with('patient');
 
         $query->when($request->filled('patient_search'), function ($q) use ($request) {
-            $q->where(function ($subQuery) use ($request) {
-                $subQuery->where('patient_last_name', 'like', '%' . $request->patient_search . '%')
-                    ->orWhere('patient_first_name', 'like', '%' . $request->patient_search . '%')
-                    ->orWhere('patient_ssn', 'like', '%' . $request->patient_search . '%');
+            $q->whereHas('patient', function ($subQuery) use ($request) {
+                $search = $request->patient_search;
+
+                $subQuery->where(function ($inner) use ($search) {
+                    $inner->where('last_name', 'like', "%{$search}%")
+                        ->orWhere('first_name', 'like', "%{$search}%")
+                        ->orWhere('ssn', 'like', "%{$search}%");
+                });
             });
         });
 
@@ -46,7 +51,7 @@ class PrescriptionController extends Controller
         });
 
         $query->when($request->filled('status')
-            && in_array($request->status, ['to_prepare', 'to_deliver', 'closed', 'waiting_for_consent']), function ($q) use ($request) {
+            && in_array($request->status, ['to_prepare', 'to_deliver', 'closed']), function ($q) use ($request) {
                 $q->where('status', '=', $request->status);
             });
 
@@ -59,10 +64,28 @@ class PrescriptionController extends Controller
         return view('prescriptions.index', compact('prescriptions'));
     }
 
+    private function getPatientData(array $data)
+    {
+        return [
+            'last_name' => $data['patient_last_name'],
+            'first_name' => $data['patient_first_name'],
+            'ssn' => $data['patient_ssn'],
+            'contact_method' => $data['patient_contact_method'],
+            'contact_value' => $data['patient_contact_value'],
+        ];
+    }
+
     public function store(StorePrescriptionRequest $request)
     {
-        $prescription = new Prescription($request->validated());
+        $validated = $request->validated();
+
+        $patient = new Patient($this->getPatientData($validated));
+        $patient->user_id = auth()->id();
+        $patient->save();
+
+        $prescription = new Prescription($validated);
         $prescription->user_id = auth()->id();
+        $prescription->patient_id = $patient->id;
         $prescription->save();
 
         return back()
@@ -71,7 +94,11 @@ class PrescriptionController extends Controller
 
     public function update(StorePrescriptionRequest $request, Prescription $prescription)
     {
-        $prescription->update($request->validated());
+        $validated = $request->validated();
+
+        $prescription->patient->update($this->getPatientData($validated));
+        $prescription->update($validated);
+
         return back()
             ->with('success', 'Ordonnance mise à jour.');
     }
@@ -79,7 +106,7 @@ class PrescriptionController extends Controller
     public function destroy(Prescription $prescription, PrescriptionNotifier $notifier)
     {
         $prescription->delete();
-        if ($prescription->hasRenewableLeft() && auth()->user()->can('notify', $prescription->patient_contact_method)) {
+        if ($prescription->hasRenewableLeft() && auth()->user()->can('notify', $prescription->patient->contact_method)) {
             $notifier->send($prescription, Subject::Deleted);
         }
         return back()
@@ -91,7 +118,7 @@ class PrescriptionController extends Controller
         try {
             $prescription->update(['status' => 'to_deliver']);
 
-            if ($request->notify === "on" && auth()->user()->can('notify', $prescription->patient_contact_method)) {
+            if ($request->notify === "on" && auth()->user()->can('notify', $prescription->patient->contact_method)) {
                 $notifier->send($prescription, Subject::Prepared);
             }
 
@@ -141,7 +168,7 @@ class PrescriptionController extends Controller
             ];
 
             $prescription->update($attr);
-            if (auth()->user()->can('notify', $prescription->patient_contact_method)) {
+            if (auth()->user()->can('notify', $prescription->patient->contact_method)) {
                 $notifier->send($prescription, Subject::Cancelled);
             }
             return back()

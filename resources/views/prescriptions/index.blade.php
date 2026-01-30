@@ -123,6 +123,12 @@
         },
 
         getInputValue(field) {
+          // TODO : This is not the best, maybe try to refactor it later
+          if (field.startsWith('patient_')) {
+            const key = field.replace(/^patient_/, '');
+            return this.current?.patient?.[key] ?? this.defaultValues[field] ?? this.defaultValues?.patient?.[key] ?? null;
+          }
+
           return this.current && this.current[field] || this.defaultValues[field];
         },
 
@@ -130,9 +136,10 @@
           return method === 'email' ? 'john@doe.com' : '0612345678';
         },
 
+        // TODO : fix and implement back
         getContactPattern(method) {
           return method === 'email'
-            ? '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' // TODO : fix and implement back
+            ? '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
             : '0[1-9][0-9]{8}';
         },
 

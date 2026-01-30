@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Patient;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,14 +23,7 @@ class PrescriptionFactory extends Factory
         $lastDispensed = $this->faker->optional()->dateTimeBetween($prescribedAt, 'now');
 
         return [
-            'patient_first_name' => $this->faker->firstName,
-            'patient_last_name' => $this->faker->lastName,
-            'patient_ssn' => $this->faker->numerify('##############'),
-            'patient_contact_method' => $method = $this->faker->randomElement(['email', 'call', 'sms']),
-            'patient_contact_value' => match ($method) {
-                'email' => $this->faker->safeEmail(),
-                'call', 'sms' => '0' . $this->faker->numerify('6########'),
-            },
+            'patient_id' => Patient::pluck('id')->random(),
             'doctor_first_name' => $this->faker->firstName,
             'doctor_last_name' => $this->faker->lastName,
             'prescribed_at' => $prescribedAt,
@@ -39,7 +33,7 @@ class PrescriptionFactory extends Factory
             'last_dispensed_at' => $lastDispensed,
             'dispense_interval_days' => $dispenseInterval,
             'notes' => $this->faker->sentence,
-            'status' => $this->faker->randomElement(['to_prepare', 'to_deliver', 'closed', 'waiting_for_consent']),
+            'status' => $this->faker->randomElement(['to_prepare', 'to_deliver', 'closed']),
         ];
     }
 }

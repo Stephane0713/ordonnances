@@ -13,13 +13,14 @@ return new class extends Migration {
         Schema::create('prescriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
 
             // --- Patient info ---
-            $table->string('patient_first_name');
-            $table->string('patient_last_name');
-            $table->string('patient_ssn');
-            $table->enum('patient_contact_method', ['email', 'call', 'sms']);
-            $table->string('patient_contact_value');
+            // $table->string('patient_first_name');
+            // $table->string('patient_last_name');
+            // $table->string('patient_ssn');
+            // $table->enum('patient_contact_method', ['email', 'call', 'sms']);
+            // $table->string('patient_contact_value');
 
             // --- Doctor info ---
             $table->string('doctor_first_name');
@@ -35,7 +36,7 @@ return new class extends Migration {
             $table->date('next_dispense_at')->nullable();
 
             // --- Status & notes ---
-            $table->enum('status', ['to_prepare', 'to_deliver', 'waiting_for_consent', 'closed'])->default('to_prepare');
+            $table->enum('status', ['to_prepare', 'to_deliver', 'closed'])->default('to_prepare');
             $table->text('notes')->nullable();
 
             $table->timestamps();

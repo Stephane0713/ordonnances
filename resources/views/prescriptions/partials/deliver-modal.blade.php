@@ -10,7 +10,7 @@
 
     <p class="mt-1 text-sm text-gray-600">
       Classer l'ordonnance de <span
-        x-text="`${current?.patient_first_name} ${current?.patient_last_name.toUpperCase()}`"></span> comme délivrée ?
+        x-text="`${current?.patient.first_name} ${current?.patient.last_name.toUpperCase()}`"></span> comme délivrée ?
     </p>
 
     <p class="mt-1 text-sm text-gray-600">

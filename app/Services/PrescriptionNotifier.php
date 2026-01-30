@@ -21,7 +21,7 @@ class PrescriptionNotifier
 {
     public function send(Prescription $prescription, Subject $subject)
     {
-        $method = $prescription->patient_contact_method;
+        $method = $prescription->patient->contact_method;
 
         match ($subject) {
             Subject::Prepared => $this->notifyPrepared($prescription, $method),
@@ -35,7 +35,7 @@ class PrescriptionNotifier
     private function notifyPrepared($prescription, $method)
     {
         match ($method) {
-            'email' => Mail::to($prescription->patient_contact_value)->send(new PrepareMail($prescription)),
+            'email' => Mail::to($prescription->patient->contact_value)->send(new PrepareMail($prescription)),
             'sms' => $this->sendSms($prescription, "Your prescription is prepared."),
             default => null,
         };
@@ -44,7 +44,7 @@ class PrescriptionNotifier
     private function notifyCancelled($prescription, $method)
     {
         match ($method) {
-            'email' => Mail::to($prescription->patient_contact_value)->send(new CancelMail($prescription)),
+            'email' => Mail::to($prescription->patient->contact_value)->send(new CancelMail($prescription)),
             'sms' => $this->sendSms($prescription, "Your prescription was cancelled."),
             default => null,
         };
@@ -53,7 +53,7 @@ class PrescriptionNotifier
     private function notifyDeleted($prescription, $method)
     {
         match ($method) {
-            'email' => Mail::to($prescription->patient_contact_value)->send(new DeleteMail($prescription)),
+            'email' => Mail::to($prescription->patient->contact_value)->send(new DeleteMail($prescription)),
             'sms' => $this->sendSms($prescription, "Your prescription was deleted."),
             default => null,
         };
@@ -62,7 +62,7 @@ class PrescriptionNotifier
     private function notifyLateForPickUp($prescription, $method)
     {
         match ($method) {
-            'email' => Mail::to($prescription->patient_contact_value)->send(new LateForPickUpMail($prescription)),
+            'email' => Mail::to($prescription->patient->contact_value)->send(new LateForPickUpMail($prescription)),
             'sms' => $this->sendSms($prescription, "Your prescription is late for pick up."),
             default => null,
         };
